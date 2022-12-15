@@ -7,12 +7,14 @@ import java.net.ServerSocket;
 import java.net.Socket;
 
 import MarcoWalter.ChatProject.Models.OnlineUser;
+import MarcoWalter.ChatProject.Models.User;
 
-public class UserSocketClient {
+public class UserSocketClient extends UserSocketTCP{
     private Socket socketForConnect;
-    private static int chatId = 0;
+    private int chatId = 0;
 
-    public UserSocketClient() {
+    public UserSocketClient(User _user) {
+    	super(_user);
     }
 
     public void initChat(OnlineUser user){

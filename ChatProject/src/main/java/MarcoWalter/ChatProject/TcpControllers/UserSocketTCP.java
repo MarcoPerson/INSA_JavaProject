@@ -1,16 +1,11 @@
 package MarcoWalter.ChatProject.TcpControllers;
 
-import MarcoWalter.ChatProject.Models.OnlineUser;
+import MarcoWalter.ChatProject.Models.User;
 
 public class UserSocketTCP {
-    protected OnlineUser user;
+    protected User user;
 
-    public UserSocketTCP(OnlineUser _user){
+    public UserSocketTCP(User _user){
         user = _user;
     }
-
-    public boolean startChat(OnlineUser user){
-        return false;
-    }
-    
 }

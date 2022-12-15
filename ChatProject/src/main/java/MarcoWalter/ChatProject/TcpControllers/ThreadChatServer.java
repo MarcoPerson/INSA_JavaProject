@@ -9,9 +9,10 @@ public class ThreadChatServer extends Thread {
     private OnlineUser user;
     private int port;
 
-    public ThreadChatServer(int chatId, Socket _chatSocket, int _port) {
+    public ThreadChatServer(OnlineUser chatter, Socket _chatSocket, int _port) {
         entrie = _chatSocket;
         port = _port;
+        user = chatter;
         start();
     }
 
@@ -26,10 +27,9 @@ public class ThreadChatServer extends Thread {
     public void chat() {
         try {
             Socket chatSocket = new Socket(entrie.getInetAddress(), port);
-            OnlineUser marco = new OnlineUser("marco", 235, null, 1235);
-            System.out.println("Starting chat With Id ..." + marco.getId());
+            System.out.println("Starting chat With id : " + user.getId());
             new TreadMessageSender(chatSocket);
-            new ThreadMessageReceiver(marco, chatSocket);
+            new ThreadMessageReceiver(user, chatSocket);
         } catch (Exception e) {
             e.printStackTrace();
         }

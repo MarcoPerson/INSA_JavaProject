@@ -71,12 +71,12 @@ public class App extends Application {
         myChooser.close();
 
         // Listening on TCP for incoming chat demand
-        UserSocketServer mySocketServer = new UserSocketServer();
+        UserSocketServer mySocketServer = new UserSocketServer(me);
         Thread listener = new Thread(() -> mySocketServer.listen());
         listener.start();
 
         // Asking for a chat with the first user
-        UserSocketClient mysocket = new UserSocketClient();
+        UserSocketClient mysocket = new UserSocketClient(me);
         int oneId = me.getUserBookManager().getUserBook().keySet().stream().mapToInt(Integer::intValue).toArray()[0];
         mysocket.initChat(me.getUserBookManager().chooseOnlineUser(oneId));
         launch();

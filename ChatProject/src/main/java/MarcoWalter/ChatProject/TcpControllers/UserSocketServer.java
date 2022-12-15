@@ -4,10 +4,14 @@ import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-public class UserSocketServer {
+import MarcoWalter.ChatProject.Models.OnlineUser;
+import MarcoWalter.ChatProject.Models.User;
+
+public class UserSocketServer extends UserSocketTCP {
     ServerSocket server;
 
-    public UserSocketServer() {
+    public UserSocketServer(User _user) {
+    	super(_user);
         try {
             server = new ServerSocket(3101);
         } catch (Exception e) {
@@ -24,7 +28,8 @@ public class UserSocketServer {
                 String message = receiveMessage(socket);
                 int id = Integer.parseInt(message.split("::")[0]);
                 int port = Integer.parseInt(message.split("::")[1]);
-                new ThreadChatServer(id, socket, port);
+                OnlineUser chatter = super.user.getUserBookManager().chooseOnlineUser(id);
+                new ThreadChatServer(chatter, socket, port);
             } catch (Exception e) {
                 e.printStackTrace();
             }
