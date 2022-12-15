@@ -73,6 +73,11 @@ public class UserSocketUDP {
             }
         } catch (Exception e) {
         }
+        
+        try {
+        	socketUDP.setSoTimeout(9000000);
+        }
+        catch(Exception e) {}
         System.out.println("Number of Online User : " + user.getUserBookManager().getUserBook().size());
 
         // Print all the Online Users

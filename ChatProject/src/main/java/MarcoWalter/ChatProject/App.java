@@ -10,6 +10,8 @@ import java.io.IOException;
 import java.util.Scanner;
 
 import MarcoWalter.ChatProject.Models.User;
+import MarcoWalter.ChatProject.TcpControllers.UserSocketClient;
+import MarcoWalter.ChatProject.TcpControllers.UserSocketServer;
 import MarcoWalter.ChatProject.UdpControllers.UserSocketUDP;
 
 /**
@@ -36,27 +38,47 @@ public class App extends Application {
     }
 
     public static void main(String[] args) {
+        // Connecting to the System
+        User me = new User(1);
+        int id;
+        String password;
+        Scanner myChooser = new Scanner(System.in);
+
+        System.out.print("Enter your id : ");
+        id = Integer.parseInt(myChooser.nextLine());
+
+        System.out.print("Enter your password : ");
+        password = myChooser.nextLine();
+        
     	try {
-    		User walter = new User(1);
-            Scanner pseudoChooser = new Scanner(System.in);
-            UserSocketUDP walSocketUDP = new UserSocketUDP(walter);
+            UserSocketUDP meSocketUDP = new UserSocketUDP(me);
             boolean agreed = false;
             do {
                 System.out.print("Choose a new Pseudo : ");
-                walter.modifyPseudo(pseudoChooser.nextLine());
-                walter.connectToNetwork(walSocketUDP);
-                agreed = walSocketUDP.waitForAggrement();
+                me.modifyPseudo(myChooser.nextLine());
+                me.connectToNetwork(meSocketUDP);
+                agreed = meSocketUDP.waitForAggrement();
             } while (agreed == false);
 
-            walSocketUDP.broadcast(walter.getId(), walter.getPseudo(), "newUser");
-            Thread reception = new Thread(() -> walSocketUDP.receiveMessage());
+            meSocketUDP.broadcast(me.getId(), me.getPseudo(), "newUser");
+            Thread reception = new Thread(() -> meSocketUDP.receiveMessage());
             reception.start();
 
-            pseudoChooser.close();
     	}
     	catch(Exception e) {
-    		e.printStackTrace();
+            e.printStackTrace();
     	}
+        myChooser.close();
+
+        // Listening on TCP for incoming chat demand
+        UserSocketServer mySocketServer = new UserSocketServer();
+        Thread listener = new Thread(() -> mySocketServer.listen());
+        listener.start();
+
+        // Asking for a chat with the first user
+        UserSocketClient mysocket = new UserSocketClient();
+        int oneId = me.getUserBookManager().getUserBook().keySet().stream().mapToInt(Integer::intValue).toArray()[0];
+        mysocket.initChat(me.getUserBookManager().chooseOnlineUser(oneId));
         launch();
     }
 
