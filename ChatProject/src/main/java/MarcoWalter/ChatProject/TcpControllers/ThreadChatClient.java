@@ -9,7 +9,7 @@ public class ThreadChatClient extends Thread {
     private ServerSocket chatSocket;
     private OnlineUser user;
 
-    public ThreadChatClient(int chatId, ServerSocket _chatSocket, OnlineUser _user) {
+    public ThreadChatClient(ServerSocket _chatSocket, OnlineUser _user) {
         chatSocket = _chatSocket;
         user = _user;
         start();

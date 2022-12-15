@@ -39,7 +39,6 @@ public class App extends Application {
 
     public static void main(String[] args) {
         // Connecting to the System
-        User me = new User(1);
         int id;
         String password;
         Scanner myChooser = new Scanner(System.in);
@@ -50,6 +49,7 @@ public class App extends Application {
         System.out.print("Enter your password : ");
         password = myChooser.nextLine();
         
+        User me = new User(id);
     	try {
             UserSocketUDP meSocketUDP = new UserSocketUDP(me);
             boolean agreed = false;
@@ -68,7 +68,7 @@ public class App extends Application {
     	catch(Exception e) {
             e.printStackTrace();
     	}
-        myChooser.close();
+        //myChooser.close();
 
         // Listening on TCP for incoming chat demand
         UserSocketServer mySocketServer = new UserSocketServer(me);

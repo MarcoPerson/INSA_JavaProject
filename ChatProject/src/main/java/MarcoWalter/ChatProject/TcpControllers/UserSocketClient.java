@@ -22,13 +22,13 @@ public class UserSocketClient extends UserSocketTCP{
             socketForConnect = new Socket(user.getIpAddress(), 3101);
             String messageTosend;
             int port = findFreePort();
-            messageTosend = String.valueOf(user.getId()).concat("::").concat(String.valueOf(port));
+            messageTosend = String.valueOf(super.user.getId()).concat("::").concat(String.valueOf(port));
             sendMessage(messageTosend, socketForConnect);
     
             socketForConnect.close();
     
             ServerSocket chatSocket = new ServerSocket(port);
-            new ThreadChatClient(chatId, chatSocket, user);
+            new ThreadChatClient(chatSocket, user);
             chatId += 1;
         } catch (Exception e) {
             e.printStackTrace();
