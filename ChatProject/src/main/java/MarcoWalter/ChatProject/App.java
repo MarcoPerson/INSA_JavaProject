@@ -7,8 +7,11 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 import java.io.IOException;
+import java.sql.Connection;
 import java.util.Scanner;
 
+import MarcoWalter.ChatProject.DatabaseControllers.DbControllers;
+import MarcoWalter.ChatProject.Models.DataBase;
 import MarcoWalter.ChatProject.Models.User;
 import MarcoWalter.ChatProject.TcpControllers.UserSocketClient;
 import MarcoWalter.ChatProject.TcpControllers.UserSocketServer;
@@ -75,11 +78,24 @@ public class App extends Application {
         Thread listener = new Thread(() -> mySocketServer.listen());
         listener.start();
 
-        // Asking for a chat with the first user
-        UserSocketClient mysocket = new UserSocketClient(me);
-        int oneId = me.getUserBookManager().getUserBook().keySet().stream().mapToInt(Integer::intValue).toArray()[0];
-        mysocket.initChat(me.getUserBookManager().chooseOnlineUser(oneId));
-        launch();
+//        // Asking for a chat with the first user
+//        UserSocketClient mysocket = new UserSocketClient(me);
+//        int oneId = me.getUserBookManager().getUserBook().keySet().stream().mapToInt(Integer::intValue).toArray()[0];
+//        mysocket.initChat(me.getUserBookManager().chooseOnlineUser(oneId));
+//        launch();
+
+        DataBase dataBase = new DataBase(String.valueOf(id), password, "Chat.db");
+        dataBase.createNewDataBase(String.valueOf(id), password);
+        
+        DbControllers dbConn = new DbControllers(dataBase, String.valueOf(id), password);
+        dbConn.createNewTable();
+        dbConn.insertLine(237, 1, "hello", "31/01/2023 11:53:01");
+        dbConn.insertLine(228, 1, "hi", "31/01/2023 11:53:01");
+        dbConn.insertLine(237, 1, "good", "31/01/2023 11:53:01");
+        for(String message : dbConn.getMessageWith(228)) {
+        	System.out.println(message);
+        }
+        
     }
 
 }
