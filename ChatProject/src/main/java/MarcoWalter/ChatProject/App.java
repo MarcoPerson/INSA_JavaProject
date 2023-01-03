@@ -89,10 +89,10 @@ public class App extends Application {
         
         DbControllers dbConn = new DbControllers(dataBase, String.valueOf(id), password);
         dbConn.createNewTable();
-        dbConn.insertLine(237, 1, "hello", "31/01/2023 11:53:01");
-        dbConn.insertLine(228, 1, "hi", "31/01/2023 11:53:01");
-        dbConn.insertLine(237, 1, "good", "31/01/2023 11:53:01");
-        for(String message : dbConn.getMessageWith(228)) {
+//        dbConn.insertLine(237, 1, "hello", "31/01/2023 11:53:01");
+//        dbConn.insertLine(228, 1, "hi", "31/01/2023 11:53:01");
+//        dbConn.insertLine(237, 1, "good", "31/01/2023 11:53:01");
+        for(String message : dbConn.getMessageWith(237)) {
         	System.out.println(message);
         }
         

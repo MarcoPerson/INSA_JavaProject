@@ -22,7 +22,7 @@ public class ThreadChatClient extends Thread {
     public void chat() {
         try {
             Socket entrie = chatSocket.accept();
-            new TreadMessageSender(entrie);
+            new TreadMessageSender(user, entrie);
             new ThreadMessageReceiver(user, entrie);
             chatSocket.close();
         } catch (Exception e) {

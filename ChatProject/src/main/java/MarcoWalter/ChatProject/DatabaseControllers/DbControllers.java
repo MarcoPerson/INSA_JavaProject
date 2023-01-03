@@ -37,8 +37,8 @@ public class DbControllers {
     }
 
     public void insertLine(int idChater, int type, String message, String date) {
-        String resquest = "INSERT INTO userMessages (idMessage, idChater, type, message, time)"
-                + "VALUES($next_id, ?,?,?,?)";
+        String resquest = "INSERT INTO userMessages (idChater, type, message, time)"
+                + "VALUES(?,?,?,?)";
         try {
             PreparedStatement statement = conn.prepareStatement(resquest);
             statement.setInt(1, idChater);
@@ -54,13 +54,13 @@ public class DbControllers {
 
     public List<String> getMessageWith(int _idChater) {
         List<String> messages = new ArrayList<>();
-        String resquest = "SELECT type, message, time FROM userMessages WHERE idChater = "
+        String resquest = "SELECT idMessage, type, message, time FROM userMessages WHERE idChater = "
                 + Integer.toString(_idChater);
         try {
             Statement statement = conn.createStatement();
             ResultSet result = statement.executeQuery(resquest);
             while (result.next()) {
-                String entity = Integer.toString(result.getInt("type")).concat("::").concat(result.getString("message"))
+                String entity = Integer.toString(result.getInt("idMessage")).concat("::").concat(Integer.toString(result.getInt("type"))).concat("::").concat(result.getString("message"))
                         .concat("::").concat(result.getString("time"));
                 messages.add(entity);
             }
