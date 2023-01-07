@@ -23,12 +23,22 @@ import MarcoWalter.ChatProject.UdpControllers.UserSocketUDP;
 public class App extends Application {
 
     private static Scene scene;
+    private static Stage stage;
 
     @Override
     public void start(Stage stage) throws IOException {
-        scene = new Scene(loadFXML("primary"), 640, 480);
+    	this.stage = stage;
+        scene = new Scene(loadFXML("login"), 800, 500);
         stage.setScene(scene);
         stage.show();
+    }
+    
+    public static Stage getStage() {
+    	return stage;
+    }
+    
+    public static Scene getScene() {
+    	return scene;
     }
 
     static void setRoot(String fxml) throws IOException {
@@ -82,7 +92,6 @@ public class App extends Application {
 //        UserSocketClient mysocket = new UserSocketClient(me);
 //        int oneId = me.getUserBookManager().getUserBook().keySet().stream().mapToInt(Integer::intValue).toArray()[0];
 //        mysocket.initChat(me.getUserBookManager().chooseOnlineUser(oneId));
-//        launch();
 
         DataBase dataBase = new DataBase(String.valueOf(id), password, "Chat.db");
         dataBase.createNewDataBase(String.valueOf(id), password);
@@ -95,6 +104,8 @@ public class App extends Application {
         for(String message : dbConn.getMessageWith(237)) {
         	System.out.println(message);
         }
+        
+        launch();
         
     }
 

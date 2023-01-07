@@ -1,0 +1,69 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.VBox?>
+
+<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="500.0" prefWidth="800.0" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="MarcoWalter.ChatProject.LoginController">
+   <children>
+      <SplitPane dividerPositions="0.20350636931359423" layoutX="308.0" layoutY="120.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+        <items>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <Label alignment="CENTER" layoutX="158.0" layoutY="109.0" scaleX="2.0" scaleY="2.0" text="INSA CHAT" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" />
+               </children>
+            </AnchorPane>
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
+               <children>
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                     <children>
+                        <Label alignment="CENTER" prefHeight="40.0" prefWidth="300.0" scaleX="2.0" scaleY="2.0" text="Login">
+                           <VBox.margin>
+                              <Insets bottom="30.0" top="40.0" />
+                           </VBox.margin>
+                        </Label>
+                        <Label alignment="CENTER" prefHeight="17.0" prefWidth="0.0" text="Id">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="idField" maxWidth="300.0" promptText="Enter your ID">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin></TextField>
+                        <Label text="Pseudo">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <TextField fx:id="pseudoField" maxWidth="300.0" promptText="Enter your Pseudo">
+                           <VBox.margin>
+                              <Insets bottom="5.0" />
+                           </VBox.margin></TextField>
+                        <Label text="Password">
+                           <VBox.margin>
+                              <Insets bottom="5.0" top="10.0" />
+                           </VBox.margin>
+                        </Label>
+                        <PasswordField fx:id="passwordField" maxWidth="300.0" promptText="Enter your Password" />
+                        <Button fx:id="loginButton" minHeight="40.0" minWidth="80.0" onAction="#login" text="Login">
+                           <VBox.margin>
+                              <Insets top="20.0" />
+                           </VBox.margin>
+                        </Button>
+                     </children>
+                     <padding>
+                        <Insets bottom="30.0" top="20.0" />
+                     </padding>
+                  </VBox>
+               </children>
+            </AnchorPane>
+        </items>
+      </SplitPane>
+   </children>
+</AnchorPane>
