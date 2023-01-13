@@ -47,7 +47,7 @@ public class ThreadChatServer extends Thread {
             new ControllerManager().setDiscussionScene(HomeController.getInstance(), App.discussionScenes.get(user.getId()));
             
             System.out.println("Starting chat With id : " + user.getId());
-            new TreadMessageSender(user, chatSocket);
+//            new TreadMessageSender(user, chatSocket);
             new ThreadMessageReceiver(user, chatSocket);
         } catch (Exception e) {
             e.printStackTrace();

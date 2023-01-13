@@ -44,7 +44,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
     	this.stage = stage;
     	stage.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
-        scene = new Scene(loadFXML("login"), 800, 500);
+        scene = new Scene(loadFXML("login"), 900, 500);
         stage.setScene(scene);
         stage.show();
     }

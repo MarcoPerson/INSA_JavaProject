@@ -7,6 +7,8 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
+import MarcoWalter.ChatProject.App;
+import MarcoWalter.ChatProject.MessageController;
 import MarcoWalter.ChatProject.DatabaseControllers.DbControllers;
 import MarcoWalter.ChatProject.Models.DataBase;
 import MarcoWalter.ChatProject.Models.OnlineUser;
@@ -52,6 +54,9 @@ public class ThreadMessageReceiver extends Thread {
                 Date today = Calendar.getInstance().getTime();
                 String todayAsString = df.format(today);
                 dbConn.insertLine(user.getId(), 1, message, todayAsString);
+                
+                MessageController controller = App.discussionControllers.get(user.getId());
+                controller.addReceiverMessage(message);
             }
         } catch (Exception e) {
             if(e.toString().equals("java.net.SocketException: Socket closed")){
