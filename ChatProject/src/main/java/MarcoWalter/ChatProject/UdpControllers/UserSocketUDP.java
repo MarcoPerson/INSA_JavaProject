@@ -9,7 +9,9 @@ import java.net.NetworkInterface;
 import java.net.SocketException;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.Iterator;
 
+import MarcoWalter.ChatProject.HomeController;
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import MarcoWalter.ChatProject.Models.User;
 
@@ -31,10 +33,12 @@ public class UserSocketUDP {
             int port = 2504;
             byte[] message = new byte[50];
             message = String.valueOf(_id).concat("::").concat(_pseudo).concat("::").concat(_message).getBytes();
-            Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-            NetworkInterface ni = en.nextElement();
-            InterfaceAddress ia = ni.getInterfaceAddresses().get(1);
-            InetAddress ipAddress = ia.getBroadcast();
+//            Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+//            NetworkInterface ni = en.nextElement();
+//            InterfaceAddress ia = ni.getInterfaceAddresses().get(1);
+            Iterator<InterfaceAddress> networkInterface = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getInterfaceAddresses().iterator();
+            InetAddress ipAddress = networkInterface.next().getBroadcast();
+            ipAddress = InetAddress.getByName("10.1.255.255");
             DatagramPacket packet = new DatagramPacket(message, message.length, ipAddress, port);
             socketUDP.send(packet);
             socketUDP.receive(packet);
@@ -111,6 +115,7 @@ public class UserSocketUDP {
                     }
                 } else if (data[2].equals("newUser")) {
                     user.getUserBookManager().addOnlineUser(newuser.getId(), newuser);
+                    HomeController.getInstance().items.add(newuser);
                     System.out.println("Number of Online User : " + user.getUserBookManager().getUserBook().size());
                     replyMessage = "userAdded";
                 }

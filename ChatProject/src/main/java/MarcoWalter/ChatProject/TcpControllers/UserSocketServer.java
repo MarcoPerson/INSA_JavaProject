@@ -3,9 +3,9 @@ package MarcoWalter.ChatProject.TcpControllers;
 import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
-
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import MarcoWalter.ChatProject.Models.User;
+
 
 public class UserSocketServer extends UserSocketTCP {
     ServerSocket server;
