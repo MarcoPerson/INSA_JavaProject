@@ -56,12 +56,17 @@ public class PseudoController {
 				setLabelPseudoText("It is already your Pseudo !");
 			} else {
 				App.reception.stop();
+				System.out.println("Stop is working");
 				App.meSocketUDP.broadcast(App.me.getId(), pseudo, "Is Pseudo Ok");
+				System.out.println("Broadcast is working");
 				boolean agreed = App.meSocketUDP.waitForAggrement();
+				System.out.println("WaitforAgree is working");
 				if (agreed) {
 					App.meSocketUDP.broadcast(App.me.getId(), pseudo, "newPseudo");
+					System.out.println("Broadcast pseudo working");
 					App.me.modifyPseudo(pseudo);
 					new ControllerManager().updateHomeTitle();
+					System.out.println("Update title working");
 					stage.close();
 
 				} else {
@@ -69,6 +74,7 @@ public class PseudoController {
 				}
 				App.reception = new Thread(() -> App.meSocketUDP.receiveMessage());
 				App.reception.start();
+				System.out.println("New Thread working");
 
 			}
 		} else {

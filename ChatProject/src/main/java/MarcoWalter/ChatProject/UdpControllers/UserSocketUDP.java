@@ -63,9 +63,20 @@ public class UserSocketUDP {
 //            InetAddress ipAddress = networkInterface.next().getBroadcast();
 			
 			InetAddress ipAddress = tabBroadcast.get(tabBroadcast.size() - 1);
+			System.out.println("Got table working + " + ipAddress.getHostAddress());
 			DatagramPacket packet = new DatagramPacket(message, message.length, ipAddress, port);
+			System.out.println("Packet created working");
 			socketUDP.send(packet);
-			socketUDP.receive(packet);
+			System.out.println("Packet send working");
+			try {
+				socketUDP.setSoTimeout(100);
+				socketUDP.receive(packet);
+			} catch (Exception e) {}
+			try {
+				socketUDP.setSoTimeout(9000000);
+			} catch (Exception e) {}
+			
+			System.out.println("Packet receive working");
 			System.out.println(" Broadcast = " + ipAddress.getHostAddress());
 		} catch (Exception e) {
 			e.printStackTrace();
