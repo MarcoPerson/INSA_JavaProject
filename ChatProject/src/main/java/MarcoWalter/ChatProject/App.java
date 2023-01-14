@@ -38,6 +38,8 @@ public class App extends Application {
     public static HashMap<Integer, AnchorPane> discussionScenes = new HashMap<>();
     public static HashMap<Integer, MessageController> discussionControllers = new HashMap<>();
     public static UserSocketClient mysocket;
+    public static UserSocketUDP meSocketUDP;
+    public static Thread reception;
     public static User me;
 
     @Override
@@ -70,7 +72,7 @@ public class App extends Application {
     public static void ConnectToTheSystem(int id, String pseudo, String password) {
     	me = new User(id);
      	try {
-             UserSocketUDP meSocketUDP = new UserSocketUDP(me);
+             meSocketUDP = new UserSocketUDP(me);
              boolean agreed = false;
              me.modifyPseudo(pseudo);
              me.connectToNetwork(meSocketUDP);
@@ -78,7 +80,7 @@ public class App extends Application {
              
              if(agreed) {
             	 meSocketUDP.broadcast(me.getId(), me.getPseudo(), "newUser");
-                 Thread reception = new Thread(() -> meSocketUDP.receiveMessage());
+                 reception = new Thread(() -> meSocketUDP.receiveMessage());
                  reception.start();
                  new ControllerManager().setconnectionMessageText(new LoginController().getInstance(), "Connected sucessfully");
                  mysocket = new UserSocketClient(me);

@@ -72,7 +72,7 @@
       </AnchorPane>
       <ButtonBar prefHeight="40.0" prefWidth="200.0">
         <buttons>
-            <Button mnemonicParsing="false" text="Create Chat Group" />
+            <Button fx:id="createChatGroupButton" mnemonicParsing="false" onAction="#createChatGroup" text="Create Chat Group" />
             <Button fx:id="changePseudoButton" mnemonicParsing="false" onAction="#changePseudo" text="Change Pseudo" />
               <Button fx:id="deconnexionButton" alignment="CENTER" onAction="#deconnectToLogin" text="Deconnexion" />
         </buttons>

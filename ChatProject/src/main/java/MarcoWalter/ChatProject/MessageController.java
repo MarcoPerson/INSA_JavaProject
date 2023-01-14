@@ -40,8 +40,7 @@ public class MessageController {
 	@FXML
 	private TextArea messageToSendField;
 	
-	public void setuserPseudoText(String text) {
-		System.out.println(text);
+	public void setUserPseudoText(String text) {
 		userPseudo.setText(text);
 	}
 	
@@ -121,5 +120,10 @@ public class MessageController {
 
 	public void setSocket(Socket socket) {
 		this.socket = socket;
+	}
+
+	public void updateOnlineUser(OnlineUser user) {
+		setUser(user);
+		setUserPseudoText(user.getPseudo());
 	}
 }

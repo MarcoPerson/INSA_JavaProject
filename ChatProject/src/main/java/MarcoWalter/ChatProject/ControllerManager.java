@@ -1,5 +1,6 @@
 package MarcoWalter.ChatProject;
 
+import MarcoWalter.ChatProject.Models.OnlineUser;
 import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
 
@@ -24,8 +25,52 @@ public class ControllerManager {
        Platform.runLater(new Runnable() {
            @Override
            public void run() {
-               controller.setDiscussion(scene);;
+               controller.setDiscussion(scene);
            }
        });
    }
+	public void addMessageIntoScrollPane(MessageController controller, String message) {
+		 if (controller == null) {
+	            System.out.println("Controller or connectionMessage object is null. Text cannot be set.");
+	            return;
+	        }
+      Platform.runLater(new Runnable() {
+          @Override
+          public void run() {
+              controller.addReceiverMessage(message);
+          }
+      });
+    }
+	public void updateHomeTitle() {
+     Platform.runLater(new Runnable() {
+         @Override
+         public void run() {
+        	 App.getStage().setTitle("Home - " + App.me.getPseudo());
+         }
+     });
+   }
+	public void updateTableList(HomeController controller) {
+		 if (controller == null) {
+	            System.out.println("Controller or connectionMessage object is null. Text cannot be set.");
+	            return;
+	        }
+     Platform.runLater(new Runnable() {
+         @Override
+         public void run() {
+             controller.updateTableList();
+         }
+     });
+   }
+	public void updateOnlineUser(MessageController controller, OnlineUser user) {
+		 if (controller == null) {
+	            System.out.println("Controller or connectionMessage object is null. Text cannot be set.");
+	            return;
+	        }
+    Platform.runLater(new Runnable() {
+        @Override
+        public void run() {
+            controller.updateOnlineUser(user);
+        }
+    });
+  }
 }

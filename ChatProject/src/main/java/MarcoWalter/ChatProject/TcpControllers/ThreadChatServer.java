@@ -42,7 +42,7 @@ public class ThreadChatServer extends Thread {
             App.discussionControllers.put(user.getId(), controller);
             controller.setSocket(chatSocket);
             controller.setUser(user);
-            controller.setuserPseudoText(user.getPseudo());
+            controller.setUserPseudoText(user.getPseudo());
             
             new ControllerManager().setDiscussionScene(HomeController.getInstance(), App.discussionScenes.get(user.getId()));
             
