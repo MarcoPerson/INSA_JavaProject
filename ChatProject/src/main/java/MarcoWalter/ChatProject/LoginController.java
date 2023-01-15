@@ -61,9 +61,10 @@ public class LoginController {
 				id = reader.readLine();
 				password = reader.readLine();
 			    reader.close();
-				if(idField.getText().toString().equals(id) && passwordField.getText().toString().equals(password)) {
+			    // idField.getText().toString().equals(id) && 
+				if(passwordField.getText().toString().equals(password)) {
 					pseudo = pseudoField.getText().toString();
-					App.ConnectToTheSystem(Integer.parseInt(id), pseudo, password);
+					App.ConnectToTheSystem(Integer.parseInt(idField.getText().toString()), pseudo, password);
 				}else {
 					connectionMessage.setText("Error with id or password !!");
 				}

@@ -91,7 +91,7 @@ public class MessageController {
         hbox2.setAlignment(Pos.CENTER_RIGHT);
 
         TextFlow textFlow2 = new TextFlow();
-        textFlow2.setPrefHeight(66);
+        textFlow2.setPrefHeight(20);
         textFlow2.setPrefWidth(200);
         textFlow2.setStyle("-fx-background-color: #45B6FE; -fx-background-radius: 5px;");
 

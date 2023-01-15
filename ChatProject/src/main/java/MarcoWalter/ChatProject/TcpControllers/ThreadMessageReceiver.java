@@ -8,6 +8,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import MarcoWalter.ChatProject.App;
+import MarcoWalter.ChatProject.ControllerManager;
 import MarcoWalter.ChatProject.MessageController;
 import MarcoWalter.ChatProject.DatabaseControllers.DbControllers;
 import MarcoWalter.ChatProject.Models.DataBase;
@@ -56,9 +57,10 @@ public class ThreadMessageReceiver extends Thread {
                 dbConn.insertLine(user.getId(), 1, message, todayAsString);
                 
                 MessageController controller = App.discussionControllers.get(user.getId());
-                controller.addReceiverMessage(message);
+                new ControllerManager().addMessageIntoScrollPane(controller, message);
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             if(e.toString().equals("java.net.SocketException: Socket closed")){
                 return false;
             }
