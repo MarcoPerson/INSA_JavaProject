@@ -48,4 +48,11 @@ public class UserSocketServer extends UserSocketTCP {
         }
         return message;
     }
+    
+    public void close() {
+        try {
+			server.close();
+		} catch (Exception e) {
+		}
+    }
 }

@@ -1,22 +1,35 @@
 package MarcoWalter.ChatProject;
 
 import java.io.IOException;
+import java.net.Socket;
 import java.util.Random;
 
 import MarcoWalter.ChatProject.Models.OnlineUser;
+import MarcoWalter.ChatProject.TcpControllers.UserSocketTCP;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.scene.text.TextFlow;
 import javafx.stage.Modality;
+import javafx.stage.Popup;
 import javafx.stage.Stage;
 
 public class HomeController {
@@ -65,7 +78,27 @@ public class HomeController {
 	}
 
 	@FXML
-	private void deconnectToLogin() throws IOException {
+	public void deconnectToLogin() throws IOException {
+		for (Thread onlineUserThread : UserSocketTCP.threadMap.values()) {
+			onlineUserThread.stop();
+		}
+		UserSocketTCP.threadMap.clear();
+		
+		App.me.disconnectectFromNetwork(App.meSocketUDP);
+		App.listener.stop();
+		App.listener = null;
+		App.reception.stop();
+		App.mySocketServer.close();
+		App.meSocketUDP.close();
+		App.discussionControllers.clear();
+		App.discussionScenes.clear();
+		items.clear();
+		
+		for (Socket onlineUserSocket : UserSocketTCP.socketMap.values()) {
+			onlineUserSocket.close();
+		}
+		UserSocketTCP.socketMap.clear();
+		App.me.getUserBookManager().deleteAllOnlineUser();
 		App.setRoot("login");
 		App.getStage().setTitle("Login");
 	}
@@ -105,5 +138,110 @@ public class HomeController {
 		for (OnlineUser user : App.me.getUserBookManager().getUserBook().values()) {
 			items.add(user);
 		}
+	}
+	
+	public AnchorPane getMessagePane(String disconnectText) {
+        AnchorPane root = new AnchorPane();
+        root.setMinHeight(0);
+        root.setMinWidth(0);
+        root.setPrefHeight(450);
+        root.setPrefWidth(600);
+
+        Label userPseudo = new Label();
+        userPseudo.setAlignment(Pos.CENTER);
+        userPseudo.setLayoutX(100);
+        userPseudo.setLayoutY(5);
+        userPseudo.setPrefHeight(35);
+        AnchorPane.setLeftAnchor(userPseudo, 0.0);
+        AnchorPane.setRightAnchor(userPseudo, 0.0);
+        AnchorPane.setTopAnchor(userPseudo, 5.0);
+
+        ScrollPane scrollMessage = new ScrollPane();
+        scrollMessage.setLayoutX(165);
+        scrollMessage.setLayoutY(66);
+        AnchorPane.setBottomAnchor(scrollMessage, 80.0);
+        AnchorPane.setLeftAnchor(scrollMessage, 0.0);
+        AnchorPane.setRightAnchor(scrollMessage, 0.0);
+        AnchorPane.setTopAnchor(scrollMessage, 40.0);
+
+        VBox messageBox = new VBox();
+        messageBox.setAlignment(Pos.CENTER);
+        messageBox.setPrefHeight(250);
+        messageBox.setPrefWidth(580);
+        messageBox.setPadding(new Insets(10, 10, 10, 10));
+
+        HBox hbox = new HBox();
+        hbox.setAlignment(Pos.CENTER);
+        hbox.setPrefHeight(100);
+        hbox.setPrefWidth(200);
+
+        Label userDisconnect = new Label();
+        userDisconnect.setText(disconnectText);
+        userDisconnect.setFont(new Font(21));
+        hbox.getChildren().add(userDisconnect);
+
+        messageBox.getChildren().add(hbox);
+        scrollMessage.setContent(messageBox);
+        root.getChildren().addAll(userPseudo, scrollMessage);
+        return root;
+    }
+	
+	public void showNotification(String message) {
+	    Popup popup = new Popup();
+	    AnchorPane root = new AnchorPane();
+	    root.setStyle("-fx-background-color: white; -fx-padding: 20px; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2; -fx-border-color: gray; -fx-box-shadow: 10 10 15 0 rgba(255, 255, 255, 0.5);");        
+	    VBox vBox = new VBox();
+        vBox.setAlignment(Pos.CENTER);
+        vBox.setLayoutX(-9);
+        vBox.setPrefHeight(125);
+        vBox.setPrefWidth(250);
+        vBox.setSpacing(30);
+        AnchorPane.setBottomAnchor(vBox, 0.0);
+        AnchorPane.setLeftAnchor(vBox, 0.0);
+        AnchorPane.setRightAnchor(vBox, 0.0);
+        AnchorPane.setTopAnchor(vBox, 0.0);
+
+        TextFlow textFlow = new TextFlow();
+        textFlow.setTextAlignment(TextAlignment.CENTER);
+        
+        textFlow.setPrefHeight(11);
+        textFlow.setPrefWidth(301);
+
+        Text notificationText = new Text(message);
+        notificationText.setTextAlignment(TextAlignment.CENTER);
+        notificationText.setStrokeWidth(0);
+
+        textFlow.getChildren().add(notificationText);
+
+        Button okButton = new Button("OK");
+        okButton.setMnemonicParsing(false);
+        okButton.setOnAction(e -> popup.hide());
+
+        vBox.getChildren().addAll(textFlow, okButton);
+        root.getChildren().add(vBox);
+	    popup.getContent().add(root);
+	    popup.setAutoFix(true);
+	    popup.setAutoHide(true);
+	    popup.setHideOnEscape(true);
+	    popup.show((Stage) discussionScene.getScene().getWindow());
+	}
+
+	public void manageDisconnectedUser(OnlineUser newuser) {
+		App.me.getUserBookManager().removeOnlineUser(newuser.getId());
+		updateTableList();
+		try {
+			if(UserSocketTCP.socketMap.get(newuser.getId()) != null) {
+				UserSocketTCP.threadMap.get(newuser.getId()).stop();
+				UserSocketTCP.threadMap.remove(newuser.getId());
+				UserSocketTCP.socketMap.get(newuser.getId()).close();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+		UserSocketTCP.socketMap.remove(newuser.getId());
+		App.discussionControllers.remove(newuser.getId());
+		App.discussionScenes.remove(newuser.getId());
+		
+		discussionScene.setCenter(getMessagePane(newuser.getPseudo() + " is now Offline"));
 	}
 }

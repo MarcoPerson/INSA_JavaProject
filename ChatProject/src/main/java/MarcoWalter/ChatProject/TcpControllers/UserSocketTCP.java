@@ -9,6 +9,7 @@ import java.util.Map;
 public class UserSocketTCP {
     protected User user;
     public static Map<Integer, Socket> socketMap = new HashMap<>();
+    public static Map<Integer, Thread> threadMap = new HashMap<>();
 
     public UserSocketTCP(User _user){
         user = _user;

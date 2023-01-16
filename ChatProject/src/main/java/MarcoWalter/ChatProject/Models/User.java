@@ -47,7 +47,6 @@ public class User {
             socketUDP.broadcast(id, pseudo, "Disconnecting");
             userBookManager.deleteAllOnlineUser();
         } catch (Exception e) {
-            System.out.println(e.getMessage());
         }
         return agreed;
     }

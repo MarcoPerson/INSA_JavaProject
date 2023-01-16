@@ -39,7 +39,9 @@ public class App extends Application {
     public static HashMap<Integer, MessageController> discussionControllers = new HashMap<>();
     public static UserSocketClient mysocket;
     public static UserSocketUDP meSocketUDP;
+    public static UserSocketServer mySocketServer;
     public static Thread reception;
+    public static Thread listener;
     public static User me;
 
     @Override
@@ -48,6 +50,14 @@ public class App extends Application {
     	stage.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
         scene = new Scene(loadFXML("login"), 900, 500);
         stage.setScene(scene);
+        stage.setOnCloseRequest(event -> {
+            try {
+            	if(App.listener != null) new HomeController().getInstance().deconnectToLogin();
+			} catch (IOException e) {
+				e.printStackTrace();
+			}
+        });
+
         stage.show();
     }
     
@@ -84,9 +94,16 @@ public class App extends Application {
                  reception.start();
                  new ControllerManager().setconnectionMessageText(new LoginController().getInstance(), "Connected sucessfully");
                  mysocket = new UserSocketClient(me);
+                 
                  //ConnectToDataBase(id, pseudo, password);
                  setRoot("home");
+                 
+                 // Listening on TCP for incoming chat demand
+                 mySocketServer = new UserSocketServer(me);
+                 listener = new Thread(() -> mySocketServer.listen());
+                 listener.start();
              }else {
+            	 meSocketUDP.close();
             	 new ControllerManager().setconnectionMessageText(new LoginController().getInstance(), "Pseudo already used !!!");
              }
      	}
@@ -94,10 +111,6 @@ public class App extends Application {
              e.printStackTrace();
      	}
 
-         // Listening on TCP for incoming chat demand
-         UserSocketServer mySocketServer = new UserSocketServer(me);
-         Thread listener = new Thread(() -> mySocketServer.listen());
-         listener.start();
     }
     
     public static void ConnectToDataBase(int id, String pseudo, String password) {

@@ -48,7 +48,8 @@ public class ThreadChatServer extends Thread {
             
             System.out.println("Starting chat With id : " + user.getId());
 //            new TreadMessageSender(user, chatSocket);
-            new ThreadMessageReceiver(user, chatSocket);
+            UserSocketTCP.threadMap.put(user.getId(), new ThreadMessageReceiver(user, chatSocket));
+            
         } catch (Exception e) {
             e.printStackTrace();
         }

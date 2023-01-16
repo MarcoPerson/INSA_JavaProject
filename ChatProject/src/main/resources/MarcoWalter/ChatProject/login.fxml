@@ -15,7 +15,7 @@
    <children>
       <SplitPane dividerPositions="0.20350636931359423" layoutX="308.0" layoutY="120.0" orientation="VERTICAL" prefHeight="200.0" prefWidth="160.0" style="-fx-background-color: #eeeeee;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
         <items>
-          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #45B6FE;">
+          <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0" style="-fx-background-color: #000000;">
                <children>
                   <Label alignment="CENTER" layoutX="158.0" layoutY="109.0" text="INSA CHAT" textFill="#d42b2b" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <font>
@@ -25,7 +25,7 @@
             </AnchorPane>
           <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="100.0" prefWidth="160.0">
                <children>
-                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" style="-fx-background-color: #39E75F;" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
+                  <VBox alignment="CENTER" prefHeight="200.0" prefWidth="100.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0">
                      <children>
                         <Label alignment="CENTER" prefHeight="40.0" prefWidth="300.0" scaleX="3.0" scaleY="3.0" text="Login">
                            <VBox.margin>
@@ -35,7 +35,7 @@
                               <Blend />
                            </effect>
                         </Label>
-                        <Label fx:id="connectionMessage" alignment="CENTER" prefHeight="40.0" style="-fx-background-color: #000;" textFill="#ff1414">
+                        <Label fx:id="connectionMessage" alignment="CENTER" prefHeight="40.0" textFill="#ff1414">
                            <VBox.margin>
                               <Insets bottom="20.0" />
                            </VBox.margin>

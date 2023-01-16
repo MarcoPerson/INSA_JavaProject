@@ -71,6 +71,8 @@ public class UserSocketUDP {
 			try {
 				socketUDP.setSoTimeout(100);
 				socketUDP.receive(packet);
+				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
+				System.out.println("Message reçu broadcast = " + Arrays.toString(data));
 			} catch (Exception e) {}
 			try {
 				socketUDP.setSoTimeout(9000000);
@@ -97,7 +99,7 @@ public class UserSocketUDP {
 		boolean agreed = true;
 		try {
 			long time = System.currentTimeMillis();
-			socketUDP.setSoTimeout(300);
+			socketUDP.setSoTimeout(100);
 			byte[] message = new byte[50];
 			DatagramPacket packet = new DatagramPacket(message, message.length);
 			while (System.currentTimeMillis() - time < 2000) {
@@ -123,6 +125,7 @@ public class UserSocketUDP {
 
 			}
 		} catch (Exception e) {
+			System.out.println("Socket Time Out");
 		}
 
 		try {
@@ -145,9 +148,9 @@ public class UserSocketUDP {
 	public void receiveMessage() {
 		try {
 			byte[] message = new byte[50];
-			String replyMessage = "None";
 			DatagramPacket packet = new DatagramPacket(message, message.length);
 			while (true) {
+				String replyMessage = "None";
 				System.out.println("En attente de la reception des ...");
 				socketUDP.receive(packet);
 				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
@@ -182,10 +185,19 @@ public class UserSocketUDP {
 						new ControllerManager().updateOnlineUser(App.discussionControllers.get(newuser.getId()),
 								toChangePseudoUser);
 					}
+				} else if (data[2].equals("Disconnecting")) {
+					new ControllerManager().manageDisconnectedUser(HomeController.getInstance(), newuser);
 				}
 				if (!replyMessage.equals("None"))
 					sendMessage(newuser, user.getId(), user.getPseudo(), replyMessage);
 			}
+		} catch (Exception e) {
+		}
+	}
+	
+	public void close(){
+		try {
+			socketUDP.close();
 		} catch (Exception e) {
 		}
 	}
