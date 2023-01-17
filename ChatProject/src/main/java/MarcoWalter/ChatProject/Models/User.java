@@ -4,6 +4,8 @@ import java.net.InetAddress;
 import java.util.ArrayList;
 
 import MarcoWalter.ChatProject.TcpControllers.UserSocketClient;
+import MarcoWalter.ChatProject.UdpControllers.MulticastReciever;
+import MarcoWalter.ChatProject.UdpControllers.MulticastSender;
 import MarcoWalter.ChatProject.UdpControllers.UserSocketUDP;
 
 public class User {

@@ -59,7 +59,7 @@ public class UserSocketClient extends UserSocketTCP{
         }
     }
 
-    private static int findFreePort() {
+    public static int findFreePort() {
         int port = 0;
         // For ServerSocket port number 0 means that the port number is automatically allocated.
         try (ServerSocket socket = new ServerSocket(0)) {
