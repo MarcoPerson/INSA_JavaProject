@@ -199,7 +199,9 @@ public class UserSocketUDP {
 						new ControllerManager().updateOnlineUser(App.discussionControllers.get(newuser.getId()),
 								toChangePseudoUser);
 					}
-				} else if (data[2].equals("Join The New Chat Group")) {
+				} else if (data[2].equals("NewGroup")) {
+					user.getUserBookManager().getusedMulticastAddress().add(InetAddress.getByName(data[3]));
+				} else if (data[2].equals("JoinTheChat")) {
 					String groupName = data[3];
 					InetAddress groupeIP = InetAddress.getByName(data[4]);
 					int multicastPort = Integer.parseInt(data[5]);

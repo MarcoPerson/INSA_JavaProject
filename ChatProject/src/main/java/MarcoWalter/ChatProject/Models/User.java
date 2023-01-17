@@ -65,8 +65,8 @@ public class User {
 
         String _groupeIP = groupeIP.toString();
         int multicastPort = UserSocketClient.findFreePort(); 
-        String _message = "New Group".concat("::").concat(_groupeIP);
-        String message = "Join The New Chat Group".concat("::").concat(groupName).concat("::").concat(_groupeIP).concat("::").concat(Integer.toString(multicastPort));
+        String _message = "NewGroup".concat("::").concat(_groupeIP);
+        String message = "JoinTheChat".concat("::").concat(groupName).concat("::").concat(_groupeIP).concat("::").concat(Integer.toString(multicastPort));
         socketUDP.broadcast(this.getId(), this.getPseudo(), _message);
 
         for (OnlineUser user : memberList ){
