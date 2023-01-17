@@ -1,5 +1,7 @@
 package MarcoWalter.ChatProject;
 
+import java.util.List;
+
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import javafx.application.Platform;
 import javafx.scene.layout.AnchorPane;
@@ -118,5 +120,19 @@ public class ControllerManager {
 			}
 		});
 
+	}
+
+	public void setOldMessages(MessageController controller, List<String> messages) {
+		if (controller == null) {
+			System.out.println("Controller object is null. Text cannot be set.");
+			return;
+		}
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				controller.chargeOldMessages(messages);
+			}
+		});
+		
 	}
 }

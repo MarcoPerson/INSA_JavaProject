@@ -1,6 +1,7 @@
 package MarcoWalter.ChatProject.TcpControllers;
 
 import java.net.Socket;
+import java.util.List;
 
 import MarcoWalter.ChatProject.App;
 import MarcoWalter.ChatProject.ControllerManager;
@@ -46,6 +47,10 @@ public class ThreadChatServer extends Thread {
             
             new ControllerManager().setDiscussionScene(HomeController.getInstance(), App.discussionScenes.get(user.getId()));
             new ControllerManager().setSendButtonAction(controller);
+            
+            List<String> messages = App.dbController.getMessagesWith(user.getId());
+            new ControllerManager().setOldMessages(controller, messages);
+            
             
             System.out.println("Starting chat With id : " + user.getId());
 //            new TreadMessageSender(user, chatSocket);

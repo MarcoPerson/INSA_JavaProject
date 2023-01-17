@@ -43,6 +43,7 @@ public class App extends Application {
     public static Thread reception;
     public static Thread listener;
     public static User me;
+    public static DbControllers dbController;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -95,7 +96,7 @@ public class App extends Application {
                  new ControllerManager().setconnectionMessageText(new LoginController().getInstance(), "Connected sucessfully");
                  mysocket = new UserSocketClient(me);
                  
-                 //ConnectToDataBase(id, pseudo, password);
+                 ConnectToDataBase(id, pseudo, password);
                  setRoot("home");
                  
                  // Listening on TCP for incoming chat demand
@@ -117,14 +118,8 @@ public class App extends Application {
     	DataBase dataBase = new DataBase(String.valueOf(id), password, "Chat.db");
         dataBase.createNewDataBase(String.valueOf(id), password);
         
-        DbControllers dbConn = new DbControllers(dataBase, String.valueOf(id), password);
-        dbConn.createUserMessages();
-//        dbConn.insertLine(237, 1, "hello", "31/01/2023 11:53:01");
-//        dbConn.insertLine(228, 1, "hi", "31/01/2023 11:53:01");
-//        dbConn.insertLine(237, 1, "good", "31/01/2023 11:53:01");
-        for(String message : dbConn.getMessagesWith(237)) {
-        	System.out.println(message);
-        }
+        dbController = new DbControllers(dataBase, String.valueOf(id), password);
+        dbController.createUserMessages();
     }
     
     public static void StartDiscussion(OnlineUser chatUser) {

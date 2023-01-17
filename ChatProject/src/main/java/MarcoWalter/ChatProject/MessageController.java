@@ -2,6 +2,7 @@ package MarcoWalter.ChatProject;
 
 import java.io.IOException;
 import java.net.Socket;
+import java.util.List;
 
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import MarcoWalter.ChatProject.TcpControllers.TreadMessageSender;
@@ -58,19 +59,23 @@ public class MessageController {
     @FXML
     private void sendMessage() throws IOException {
     	String message = messageToSendField.getText();
-    	if(!message.isEmpty()) {
-    		new TreadMessageSender(user, socket, message);
-    		addSenderMessage(message);
+    	if(!message.trim().isEmpty()) {
+    		new TreadMessageSender(user, socket, message.trim());
+    		addSenderMessage(message.trim());
     		messageToSendField.clear();
     	}
     }
     
     public void setSendAction() {
-//    	messageToSendField.setOnKeyPressed(event -> {
-//		    if (event.getCode() == KeyCode.ENTER) {
-//		    	sendMessage.fire();
-//		    }
-//		});
+    	messageToSendField.setOnKeyPressed(event -> {
+		    if (event.isShiftDown() && event.getCode() == KeyCode.ENTER) {
+		    	try {
+					sendMessage();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		});
     }
     
     public void addReceiverMessage(String message) {
@@ -114,6 +119,17 @@ public class MessageController {
         
         messageBox.getChildren().add(hbox2);
 	}
+    
+    public void chargeOldMessages(List<String> messages) {
+    	for(String message : messages) {
+    		String[] data = message.split("::");
+    		if(data[1].equals("0")) {
+    			addSenderMessage(data[2]);
+    		}else {
+    			addReceiverMessage(data[2]);
+    		}
+    	}
+    }
 
 	public OnlineUser getUser() {
 		return user;
