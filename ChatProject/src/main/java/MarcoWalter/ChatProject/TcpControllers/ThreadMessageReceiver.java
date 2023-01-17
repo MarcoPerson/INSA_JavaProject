@@ -54,7 +54,7 @@ public class ThreadMessageReceiver extends Thread {
                 DateFormat df = new SimpleDateFormat(pattern);
                 Date today = Calendar.getInstance().getTime();
                 String todayAsString = df.format(today);
-                dbConn.insertLine(user.getId(), 1, message, todayAsString);
+                dbConn.insertLineIntoUserMessages(user.getId(), 1, message, todayAsString);
                 
                 MessageController controller = App.discussionControllers.get(user.getId());
                 new ControllerManager().addMessageIntoScrollPane(controller, message);

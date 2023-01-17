@@ -15,7 +15,7 @@ public class DbControllers {
         conn = db.connect(_userId, _password);
     }
 
-    public void createNewTable() {
+    public void createUserMessages() {
 
         String url = "jdbc:sqlite:" + db.getDatabaseName();
         String resquest = "CREATE TABLE userMessages ("
@@ -36,7 +36,7 @@ public class DbControllers {
         }
     }
 
-    public void insertLine(int idChater, int type, String message, String date) {
+    public void insertLineIntoUserMessages(int idChater, int type, String message, String date) {
         String resquest = "INSERT INTO userMessages (idChater, type, message, time)"
                 + "VALUES(?,?,?,?)";
         try {
@@ -52,7 +52,7 @@ public class DbControllers {
 
     }
 
-    public List<String> getMessageWith(int _idChater) {
+    public List<String> getMessagesWith(int _idChater) {
         List<String> messages = new ArrayList<>();
         String resquest = "SELECT idMessage, type, message, time FROM userMessages WHERE idChater = "
                 + Integer.toString(_idChater);
@@ -61,6 +61,63 @@ public class DbControllers {
             ResultSet result = statement.executeQuery(resquest);
             while (result.next()) {
                 String entity = Integer.toString(result.getInt("idMessage")).concat("::").concat(Integer.toString(result.getInt("type"))).concat("::").concat(result.getString("message"))
+                        .concat("::").concat(result.getString("time"));
+                messages.add(entity);
+            }
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+        return messages;
+    }
+    public void createTableGroupMessages() {
+
+        String url = "jdbc:sqlite:" + db.getDatabaseName();
+        String resquest = "CREATE TABLE groupMessages ("
+                + " idMessage INTEGER PRIMARY KEY AUTOINCREMENT,"
+                + "idChater INTEGER NOT NULL,"
+                + "type INTEGER NOT NULL,"
+                + "groupName TEXT,"
+                + "message TEXT,"
+                + "time TEXT"
+                + " )";
+        try {
+            Connection conn = DriverManager.getConnection(url);
+            Statement stmt = conn.createStatement();
+            stmt.execute(resquest);
+            System.out.println("***Table groupMessages has beeen created***");
+
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
+
+    public void insertLineIntoGroupMessages(int idChater, int type,String groupName, String message, String date) {
+        String resquest = "INSERT INTO groupMessage (idChater, type, groupName, message, time)"
+                + "VALUES(?,?,?,?,?)";
+        try {
+            PreparedStatement statement = conn.prepareStatement(resquest);
+            statement.setInt(1, idChater);
+            statement.setInt(2, type);
+            statement.setString(3, groupName);
+            statement.setString(4, message);
+            statement.setString(5, date);
+            statement.executeUpdate();
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
+    }
+
+    public List<String> getMessagesIn(String groupName) {
+        List<String> messages = new ArrayList<>();
+        String resquest = "SELECT idMessage, idChater, type, message, time FROM userMessages WHERE groupName = "
+                + groupName;
+        try {
+            Statement statement = conn.createStatement();
+            ResultSet result = statement.executeQuery(resquest);
+            while (result.next()) {
+                String entity = Integer.toString(result.getInt("idMessage")).concat("::").concat(Integer.toString(result.getInt("idChater"))).concat("::").concat(Integer.toString(result.getInt("type"))).concat("::").concat(result.getString("message"))
                         .concat("::").concat(result.getString("time"));
                 messages.add(entity);
             }

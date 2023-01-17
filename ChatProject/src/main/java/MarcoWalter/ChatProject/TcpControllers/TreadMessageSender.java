@@ -52,7 +52,7 @@ public class TreadMessageSender extends Thread {
                     DateFormat df = new SimpleDateFormat(pattern);
                     Date today = Calendar.getInstance().getTime();
                     String todayAsString = df.format(today);
-                    dbConn.insertLine(user.getId(), 0, message, todayAsString);
+                    dbConn.insertLineIntoUserMessages(user.getId(), 0, message, todayAsString);
                 }
 //            }
         } catch (Exception e) {

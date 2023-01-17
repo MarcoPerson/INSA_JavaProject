@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
 import java.util.Iterator;
+import java.util.Random;
 
 import MarcoWalter.ChatProject.App;
 import MarcoWalter.ChatProject.ControllerManager;
@@ -61,7 +62,7 @@ public class UserSocketUDP {
 //            InterfaceAddress ia = ni.getInterfaceAddresses().get(1);
 //            Iterator<InterfaceAddress> networkInterface = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getInterfaceAddresses().iterator();
 //            InetAddress ipAddress = networkInterface.next().getBroadcast();
-			
+
 			InetAddress ipAddress = tabBroadcast.get(tabBroadcast.size() - 1);
 			System.out.println("Got table working + " + ipAddress.getHostAddress());
 			DatagramPacket packet = new DatagramPacket(message, message.length, ipAddress, port);
@@ -73,11 +74,13 @@ public class UserSocketUDP {
 				socketUDP.receive(packet);
 				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
 				System.out.println("Message reçu broadcast = " + Arrays.toString(data));
-			} catch (Exception e) {}
+			} catch (Exception e) {
+			}
 			try {
 				socketUDP.setSoTimeout(9000000);
-			} catch (Exception e) {}
-			
+			} catch (Exception e) {
+			}
+
 			System.out.println("Packet receive working");
 			System.out.println(" Broadcast = " + ipAddress.getHostAddress());
 		} catch (Exception e) {
@@ -145,6 +148,17 @@ public class UserSocketUDP {
 		return agreed;
 	}
 
+	public static InetAddress getRandomMulticastAddress() throws Exception {
+
+		int multicastOctet1 = new Random().nextInt(16) + 224;
+		int multicastOctet2 = new Random().nextInt(256);
+		int multicastOctet3 = new Random().nextInt(256);
+		int multicastOctet4 = new Random().nextInt(256);
+		String multicastAddressString = multicastOctet1 + "." + multicastOctet2 + "." + multicastOctet3 + "."
+				+ multicastOctet4;
+		return InetAddress.getByName(multicastAddressString);
+	}
+
 	public void receiveMessage() {
 		try {
 			byte[] message = new byte[50];
@@ -185,6 +199,12 @@ public class UserSocketUDP {
 						new ControllerManager().updateOnlineUser(App.discussionControllers.get(newuser.getId()),
 								toChangePseudoUser);
 					}
+				} else if (data[2].equals("Join The New Chat Group")) {
+					String groupName = data[3];
+					InetAddress groupeIP = InetAddress.getByName(data[4]);
+					int multicastPort = Integer.parseInt(data[5]);
+					new MulticastSender(groupeIP, multicastPort, groupName, user);
+					new MulticastReciever(groupeIP, multicastPort, groupName);
 				} else if (data[2].equals("Disconnecting")) {
 					new ControllerManager().manageDisconnectedUser(HomeController.getInstance(), newuser);
 				}
@@ -194,8 +214,8 @@ public class UserSocketUDP {
 		} catch (Exception e) {
 		}
 	}
-	
-	public void close(){
+
+	public void close() {
 		try {
 			socketUDP.close();
 		} catch (Exception e) {

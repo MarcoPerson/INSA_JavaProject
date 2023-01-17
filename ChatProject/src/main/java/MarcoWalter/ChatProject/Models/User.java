@@ -1,13 +1,15 @@
 package MarcoWalter.ChatProject.Models;
 
-import java.util.HashMap;
+import java.net.InetAddress;
+import java.util.ArrayList;
+
+import MarcoWalter.ChatProject.TcpControllers.UserSocketClient;
 import MarcoWalter.ChatProject.UdpControllers.UserSocketUDP;
 
 public class User {
     private String pseudo;
     private int id ;
     private UserBookManager userBookManager;
-    private HashMap <Integer,String> dataBase;
 
     public User(int _id){
         id = _id ;
@@ -41,6 +43,7 @@ public class User {
         }
         return agreed;
     }
+    
     public boolean disconnectectFromNetwork(UserSocketUDP socketUDP){
         boolean agreed = false;
         try {
@@ -49,6 +52,27 @@ public class User {
         } catch (Exception e) {
         }
         return agreed;
+    }
+    
+    public void createChatGroup(String groupName, ArrayList <OnlineUser> memberList,UserSocketUDP socketUDP) throws Exception{
+        ArrayList <InetAddress> usedMulticastAddressses = this.userBookManager.getusedMulticastAddress();
+        InetAddress groupeIP;
+        do{
+               groupeIP = UserSocketUDP.getRandomMulticastAddress();
+        }while(usedMulticastAddressses.contains(groupeIP));
+
+        String _groupeIP = groupeIP.toString();
+        int multicastPort = UserSocketClient.findFreePort(); 
+        String _message = "New Group".concat("::").concat(_groupeIP);
+        String message = "Join The New Chat Group".concat("::").concat(groupName).concat("::").concat(_groupeIP).concat("::").concat(Integer.toString(multicastPort));
+        socketUDP.broadcast(this.getId(), this.getPseudo(), _message);
+
+        for (OnlineUser user : memberList ){
+            socketUDP.sendMessage(user, this.getId(), this.getPseudo(), message);
+        }
+
+        new MulticastSender(groupeIP, multicastPort, groupName,this);
+        new MulticastReciever(groupeIP, multicastPort, groupName);
     }
     
 }

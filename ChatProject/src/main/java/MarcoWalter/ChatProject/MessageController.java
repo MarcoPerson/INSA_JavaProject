@@ -16,6 +16,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Text;
@@ -62,6 +63,14 @@ public class MessageController {
     		addSenderMessage(message);
     		messageToSendField.clear();
     	}
+    }
+    
+    public void setSendAction() {
+//    	messageToSendField.setOnKeyPressed(event -> {
+//		    if (event.getCode() == KeyCode.ENTER) {
+//		    	sendMessage.fire();
+//		    }
+//		});
     }
     
     public void addReceiverMessage(String message) {

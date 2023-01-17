@@ -40,6 +40,7 @@ public class ThreadChatClient extends Thread {
             controller.setUserPseudoText(user.getPseudo());
             
             new ControllerManager().setDiscussionScene(HomeController.getInstance(), App.discussionScenes.get(user.getId()));
+            new ControllerManager().setSendButtonAction(controller);
             
 //            new TreadMessageSender(user, entrie);
             UserSocketTCP.threadMap.put(user.getId(), new ThreadMessageReceiver(user, entrie));
