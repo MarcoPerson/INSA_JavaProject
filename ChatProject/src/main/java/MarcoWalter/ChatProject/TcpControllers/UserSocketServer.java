@@ -9,6 +9,7 @@ import MarcoWalter.ChatProject.Models.User;
 
 public class UserSocketServer extends UserSocketTCP {
     ServerSocket server;
+    private boolean bool = true;
 
     public UserSocketServer(User _user) {
     	super(_user);
@@ -21,7 +22,7 @@ public class UserSocketServer extends UserSocketTCP {
 
     public void listen() {
         System.out.println("Waiting for connections ...");
-        while (true) {
+        while (bool) {
             Socket socket = null;
             try {
                 socket = server.accept();
@@ -31,7 +32,6 @@ public class UserSocketServer extends UserSocketTCP {
                 OnlineUser chatter = super.user.getUserBookManager().chooseOnlineUser(id);
                 new ThreadChatServer(chatter, socket, port);
             } catch (Exception e) {
-                e.printStackTrace();
             }
         }
     }
@@ -51,6 +51,7 @@ public class UserSocketServer extends UserSocketTCP {
     
     public void close() {
         try {
+        	bool = false;
 			server.close();
 		} catch (Exception e) {
 		}

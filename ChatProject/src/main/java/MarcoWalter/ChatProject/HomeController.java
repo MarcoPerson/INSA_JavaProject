@@ -187,9 +187,12 @@ public class HomeController {
     }
 	
 	public void showNotification(String message) {
-	    Popup popup = new Popup();
+		Stage modal = new Stage();
+		modal.initModality(Modality.APPLICATION_MODAL);
+
+		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		
 	    AnchorPane root = new AnchorPane();
-	    root.setStyle("-fx-background-color: white; -fx-padding: 20px; -fx-background-radius: 20; -fx-border-radius: 20; -fx-border-width: 2; -fx-border-color: gray; -fx-box-shadow: 10 10 15 0 rgba(255, 255, 255, 0.5);");        
 	    VBox vBox = new VBox();
         vBox.setAlignment(Pos.CENTER);
         vBox.setLayoutX(-9);
@@ -215,15 +218,19 @@ public class HomeController {
 
         Button okButton = new Button("OK");
         okButton.setMnemonicParsing(false);
-        okButton.setOnAction(e -> popup.hide());
-
+        okButton.setOnAction(e -> modal.close());
+        
         vBox.getChildren().addAll(textFlow, okButton);
         root.getChildren().add(vBox);
-	    popup.getContent().add(root);
-	    popup.setAutoFix(true);
-	    popup.setAutoHide(true);
-	    popup.setHideOnEscape(true);
-	    popup.show((Stage) discussionScene.getScene().getWindow());
+        
+        Scene scene = new Scene(root, 250, 175);
+		modal.setScene(scene);
+		modal.setTitle("Notification");
+		modal.setResizable(false);
+		modal.show();
+
+        
+
 	}
 
 	public void manageDisconnectedUser(OnlineUser newuser) {
