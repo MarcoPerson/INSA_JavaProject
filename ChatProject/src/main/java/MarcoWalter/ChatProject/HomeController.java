@@ -121,16 +121,19 @@ public class HomeController {
 
 	@FXML
 	private void createChatGroup() throws IOException {
-		int rd = new Random().nextInt(100);
-		int key = App.me.getUserBookManager().getUserBook().keySet().stream().mapToInt(Integer::intValue).toArray()[0];
-		OnlineUser myUser = App.me.getUserBookManager().getUserBook().get(key);
-		myUser.setPseudo("Rare - " + rd);
-		System.out.println(App.me.getUserBookManager().getUserBook().get(key).getPseudo());
-		items.clear();
-		for (OnlineUser user : App.me.getUserBookManager().getUserBook().values()) {
-			System.out.println(user.getPseudo());
-			items.add(user);
-		}
+		Stage modal = new Stage();
+		modal.initModality(Modality.APPLICATION_MODAL);
+		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("group.fxml"));
+		AnchorPane pseudoPane = fxmlLoader.load();
+		GroupController controller = fxmlLoader.getController();
+		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		Scene scene = new Scene(pseudoPane, 600, 400);
+		modal.setScene(scene);
+		modal.setTitle("Create Group Chat");
+		modal.setResizable(false);
+		controller.setStage(modal);
+		controller.initializeUsers(App.me.getUserBookManager());
+		modal.show();
 	}
 
 	public void updateTableList() {
