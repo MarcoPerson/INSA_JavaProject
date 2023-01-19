@@ -9,13 +9,20 @@ import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
 
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.FileWriter;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.net.InetAddress;
 import java.sql.Connection;
 import java.util.HashMap;
 import java.util.Scanner;
 
 import MarcoWalter.ChatProject.DatabaseControllers.DbControllers;
 import MarcoWalter.ChatProject.Models.DataBase;
+import MarcoWalter.ChatProject.Models.GroupData;
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import MarcoWalter.ChatProject.Models.User;
 import MarcoWalter.ChatProject.TcpControllers.UserSocketClient;
@@ -37,6 +44,8 @@ public class App extends Application {
     
     public static HashMap<Integer, AnchorPane> discussionScenes = new HashMap<>();
     public static HashMap<Integer, MessageController> discussionControllers = new HashMap<>();
+    public static HashMap<InetAddress, AnchorPane> discussionGroupScenes = new HashMap<>();
+    public static HashMap<InetAddress, MessageController> discussionGroupControllers = new HashMap<>();
     public static UserSocketClient mysocket;
     public static UserSocketUDP meSocketUDP;
     public static UserSocketServer mySocketServer;
@@ -54,6 +63,7 @@ public class App extends Application {
         stage.setOnCloseRequest(event -> {
             try {
             	if(App.listener != null) new HomeController().getInstance().deconnectToLogin();
+            	System.exit(0);
 			} catch (IOException e) {
 				e.printStackTrace();
 			}
@@ -99,6 +109,16 @@ public class App extends Application {
                  ConnectToDataBase(id, pseudo, password);
                  setRoot("home");
                  
+                 File f = new File(".info");
+                 if(f.exists() && !f.isDirectory()) { 
+     			}else {
+     				HomeController.getInstance().showNotification("To Send a Message, You Can Press On 'SHIFT + ENTER'");
+     		    	FileWriter fileWriter = new FileWriter(".info");
+     		        PrintWriter printWriter = new PrintWriter(fileWriter);
+     		        printWriter.print("");
+     		        printWriter.close();
+     			}
+                 
                  // Listening on TCP for incoming chat demand
                  mySocketServer = new UserSocketServer(me);
                  listener = new Thread(() -> mySocketServer.listen());
@@ -135,6 +155,10 @@ public class App extends Application {
 	    	mysocket.initChat(chatUser);
 	    }
     }
+    
+    public static void enterGroup(GroupData selectedGroup) {
+	    new ControllerManager().setDiscussionScene(HomeController.getInstance(), discussionGroupScenes.get(selectedGroup.getIpAddress()));
+	}
 
     public static void main(String[] args) {
         launch();  

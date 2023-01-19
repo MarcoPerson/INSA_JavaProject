@@ -57,7 +57,7 @@ public class ThreadMessageReceiver extends Thread {
                 dbConn.insertLineIntoUserMessages(user.getId(), 1, message, todayAsString);
                 
                 MessageController controller = App.discussionControllers.get(user.getId());
-                new ControllerManager().addMessageIntoScrollPane(controller, message);
+                new ControllerManager().addMessageIntoScrollPane(controller, message, todayAsString, "single");
             }
         } catch (Exception e) {
         	e.printStackTrace();

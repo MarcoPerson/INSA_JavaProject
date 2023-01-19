@@ -13,7 +13,7 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 
-public class LoginController {
+public class LoginController extends ModelController {
 	private static LoginController instance;
 	
 	@FXML 
@@ -52,6 +52,18 @@ public class LoginController {
 		App.getStage().setTitle("Login");
 	}
 	
+	public void setSendAction() {
+    	idField.getScene().setOnKeyPressed(event -> {
+		    if (event.getCode() == KeyCode.ENTER) {
+		    	try {
+					login();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		});
+    }
+	
     @FXML
     private void login() throws IOException {
     	if(!idField.getText().toString().isEmpty() && !pseudoField.getText().toString().isEmpty() && !passwordField.getText().toString().isEmpty()) {
@@ -63,7 +75,7 @@ public class LoginController {
 				password = reader.readLine();
 			    reader.close();
 			    // idField.getText().toString().equals(id) && 
-				if(passwordField.getText().toString().equals(password)) {
+				if(idField.getText().toString().equals(id) && passwordField.getText().toString().equals(password)) {
 					pseudo = pseudoField.getText().toString();
 					App.ConnectToTheSystem(Integer.parseInt(idField.getText().toString()), pseudo, password);
 				}else {

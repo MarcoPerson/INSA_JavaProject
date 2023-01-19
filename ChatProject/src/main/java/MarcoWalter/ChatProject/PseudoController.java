@@ -49,7 +49,7 @@ public class PseudoController {
 	}
 
 	@FXML
-	private void changePseudo() throws IOException {
+	public void changePseudo() throws IOException {
 		String pseudo = textFieldPseudo.getText();
 		if (!pseudo.isEmpty()) {
 			if (pseudo.equals(App.me.getPseudo())) {

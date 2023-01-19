@@ -1,11 +1,19 @@
 package MarcoWalter.ChatProject;
 
 import java.io.IOException;
+import java.net.InetAddress;
 import java.net.Socket;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import MarcoWalter.ChatProject.Models.OnlineUser;
+import MarcoWalter.ChatProject.Models.User;
 import MarcoWalter.ChatProject.TcpControllers.TreadMessageSender;
+import MarcoWalter.ChatProject.UdpControllers.MulticastSender;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
@@ -20,12 +28,18 @@ import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
+import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
 
-public class MessageController {
+public class MessageController extends ModelController  {
 	private Socket socket;
 	private OnlineUser user;
+	public HashMap<Integer, OnlineUser> GroupUsers = new HashMap<Integer, OnlineUser>();
+	private InetAddress groupeIP; 
+	private int multicastPort;
+	private String groupName;
+	private User mySelf;
 	
 	@FXML 
 	Label userPseudo;
@@ -60,9 +74,24 @@ public class MessageController {
     private void sendMessage() throws IOException {
     	String message = messageToSendField.getText();
     	if(!message.trim().isEmpty()) {
-    		new TreadMessageSender(user, socket, message.trim());
-    		addSenderMessage(message.trim());
-    		messageToSendField.clear();
+    		if(groupName == null) {
+    			new TreadMessageSender(user, socket, message.trim());
+        		String pattern = "MM/dd/yyyy HH:mm:ss";
+                DateFormat df = new SimpleDateFormat(pattern);
+                Date today = Calendar.getInstance().getTime();
+                String todayAsString = df.format(today);
+        		addSenderMessage(message.trim(), todayAsString);
+        		messageToSendField.clear();
+    		}else {
+    			new MulticastSender(groupeIP, multicastPort, groupName, mySelf, message.trim());
+        		String pattern = "MM/dd/yyyy HH:mm:ss";
+                DateFormat df = new SimpleDateFormat(pattern);
+                Date today = Calendar.getInstance().getTime();
+                String todayAsString = df.format(today);
+        		addSenderMessage(message.trim(), todayAsString);
+        		messageToSendField.clear();
+    		}
+    		
     	}
     }
     
@@ -78,55 +107,131 @@ public class MessageController {
 		});
     }
     
-    public void addReceiverMessage(String message) {
+    public void addReceiverMessage(String message, String date) {
     	HBox hbox1 = new HBox();
-        hbox1.setAlignment(Pos.CENTER_LEFT);
+        hbox1.setPrefHeight(0.0);
+        hbox1.setPrefWidth(600.0);
 
-        VBox.setMargin(hbox1, new Insets(0, 0, 2, 0));
+        TextFlow textFlow = new TextFlow();
+        textFlow.setPrefHeight(20.0);
+        textFlow.setPrefWidth(200.0);
+        textFlow.setStyle("-fx-background-color: #39E75F; -fx-background-radius: 5px;");
+        textFlow.setPadding(new Insets(5.0, 5.0, 5.0, 5.0));
+        HBox.setMargin(textFlow, new Insets(0.0, 0.0, 2.0, 0.0));
 
-        TextFlow textFlow1 = new TextFlow();
-        textFlow1.setPrefHeight(20);
-        textFlow1.setPrefWidth(200);
-        textFlow1.setStyle("-fx-background-color: #39E75F; -fx-background-radius: 5px;");
+        Text text = new Text(message);
+        text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        text.setStrokeWidth(0.0);
 
-        Text text1 = new Text(message);
-        textFlow1.getChildren().add(text1);
+        textFlow.getChildren().add(text);
 
-        HBox.setMargin(textFlow1, new Insets(0, 0, 2, 0));
-        textFlow1.setPadding(new Insets(5, 5, 5, 5));
+        hbox1.getChildren().add(textFlow);
 
-        hbox1.getChildren().add(textFlow1);
+        HBox hbox2 = new HBox();
+        hbox2.setPrefHeight(3.0);
+        hbox2.setPrefWidth(600.0);
+
+        Text text2 = new Text(date);
+        text2.setOpacity(0.4);
+        text2.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        text2.setStrokeWidth(0.0);
+        text2.setFont(new Font(8.0));
+        HBox.setMargin(text2, new Insets(1.0, 10.0, 5.0, 5.0));
+
+        hbox2.getChildren().add(text2);
         
-        messageBox.getChildren().add(hbox1);
+        messageBox.getChildren().addAll(hbox1, hbox2);
 	}
     
-    private void addSenderMessage(String message) {
-    	HBox hbox2 = new HBox();
+    public void addReceiverGroupMessage(String messageAndUser, String date) {
+    	HBox hbox1 = new HBox();
+        hbox1.setPrefHeight(0.0);
+        hbox1.setPrefWidth(600.0);
+        
+        String[] data = messageAndUser.split("::");
+
+        Label label = new Label(data[1]);
+        label.setStyle("-fx-font-weight: 700; -fx-text-fill: #106f24");
+        label.setFont(new Font(10.0));
+
+        HBox.setMargin(label, new Insets(2.0, 10.0, 5.0, 5.0));
+
+        TextFlow textFlow = new TextFlow();
+        textFlow.setPrefHeight(20.0);
+        textFlow.setPrefWidth(200.0);
+        textFlow.setStyle("-fx-background-color: #39E75F; -fx-background-radius: 5px;");
+        textFlow.setPadding(new Insets(5.0, 5.0, 5.0, 5.0));
+        HBox.setMargin(textFlow, new Insets(0.0, 0.0, 2.0, 0.0));
+
+        Text text = new Text(data[0]);
+        text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        text.setStrokeWidth(0.0);
+
+        textFlow.getChildren().add(text);
+
+        hbox1.getChildren().addAll(label, textFlow);
+
+        HBox hbox2 = new HBox();
+        hbox2.setPrefHeight(3.0);
+        hbox2.setPrefWidth(600.0);
+
+        Text text2 = new Text(date);
+        text2.setOpacity(0.4);
+        text2.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        text2.setStrokeWidth(0.0);
+        text2.setFont(new Font(8.0));
+        HBox.setMargin(text2, new Insets(1.0, 10.0, 5.0, 5.0));
+
+        hbox2.getChildren().add(text2);
+        
+        messageBox.getChildren().addAll(hbox1, hbox2);
+	}
+    
+    private void addSenderMessage(String message, String date) {
+    	HBox hbox1 = new HBox();
+        hbox1.setPrefHeight(0.0);
+        hbox1.setPrefWidth(600.0);
+        hbox1.setAlignment(Pos.CENTER_RIGHT);
+
+        TextFlow textFlow = new TextFlow();
+        textFlow.setPrefHeight(20.0);
+        textFlow.setPrefWidth(200.0);
+        textFlow.setStyle("-fx-background-color: #45B6FE; -fx-background-radius: 5px;");
+        textFlow.setPadding(new Insets(5.0, 5.0, 5.0, 5.0));
+        HBox.setMargin(textFlow, new Insets(0.0, 0.0, 2.0, 0.0));
+
+        Text text = new Text(message);
+        text.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        text.setStrokeWidth(0.0);
+
+        textFlow.getChildren().add(text);
+
+        hbox1.getChildren().add(textFlow);
+
+        HBox hbox2 = new HBox();
+        hbox2.setPrefHeight(3.0);
+        hbox2.setPrefWidth(600.0);
         hbox2.setAlignment(Pos.CENTER_RIGHT);
 
-        TextFlow textFlow2 = new TextFlow();
-        textFlow2.setPrefHeight(20);
-        textFlow2.setPrefWidth(200);
-        textFlow2.setStyle("-fx-background-color: #45B6FE; -fx-background-radius: 5px;");
+        Text text2 = new Text(date);
+        text2.setOpacity(0.4);
+        text2.setStrokeType(javafx.scene.shape.StrokeType.OUTSIDE);
+        text2.setStrokeWidth(0.0);
+        text2.setFont(new Font(8.0));
+        HBox.setMargin(text2, new Insets(1.0, 5.0, 5.0, 10.0));
 
-        Text text2 = new Text(message);
-        textFlow2.getChildren().add(text2);
-
-        textFlow2.setPadding(new Insets(5, 5, 5, 5));
-
-        hbox2.getChildren().add(textFlow2);
-        VBox.setMargin(hbox2, new Insets(0, 0, 2, 0));
+        hbox2.getChildren().add(text2);
         
-        messageBox.getChildren().add(hbox2);
+        messageBox.getChildren().addAll(hbox1, hbox2);
 	}
     
     public void chargeOldMessages(List<String> messages) {
     	for(String message : messages) {
     		String[] data = message.split("::");
     		if(data[1].equals("0")) {
-    			addSenderMessage(data[2]);
+    			addSenderMessage(data[2], data[3]);
     		}else {
-    			addReceiverMessage(data[2]);
+    			addReceiverMessage(data[2], data[3]);
     		}
     	}
     }
@@ -150,5 +255,37 @@ public class MessageController {
 	public void updateOnlineUser(OnlineUser user) {
 		setUser(user);
 		setUserPseudoText(user.getPseudo());
+	}
+
+	public InetAddress getGroupeIP() {
+		return groupeIP;
+	}
+
+	public void setGroupeIP(InetAddress groupeIP) {
+		this.groupeIP = groupeIP;
+	}
+
+	public int getMulticastPort() {
+		return multicastPort;
+	}
+
+	public void setMulticastPort(int multicastPort) {
+		this.multicastPort = multicastPort;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+
+	public User getMySelf() {
+		return mySelf;
+	}
+
+	public void setMySelf(User mySelf) {
+		this.mySelf = mySelf;
 	}
 }

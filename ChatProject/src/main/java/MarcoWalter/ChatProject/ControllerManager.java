@@ -33,7 +33,7 @@ public class ControllerManager {
 		});
 	}
 
-	public void addMessageIntoScrollPane(MessageController controller, String message) {
+	public void addMessageIntoScrollPane(MessageController controller, String message, String date, String type) {
 		if (controller == null) {
 			System.out.println("Controller or connectionMessage object is null. Text cannot be set.");
 			return;
@@ -41,12 +41,16 @@ public class ControllerManager {
 		Platform.runLater(new Runnable() {
 			@Override
 			public void run() {
-				controller.addReceiverMessage(message);
+				if(type.equals("group")) {	
+					controller.addReceiverGroupMessage(message, date);
+				}else {					
+					controller.addReceiverMessage(message, date);
+				}
 			}
 		});
 	}
 	
-	public void setSendButtonAction(MessageController controller) {
+	public void setSendButtonAction(ModelController controller) {
 		if (controller == null) {
 			System.out.println("Controller or connectionMessage object is null. Text cannot be set.");
 			return;

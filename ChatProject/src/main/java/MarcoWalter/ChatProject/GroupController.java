@@ -7,6 +7,7 @@ import java.util.HashMap;
 import java.util.List;
 
 import MarcoWalter.ChatProject.Models.OnlineUser;
+import MarcoWalter.ChatProject.Models.User;
 import MarcoWalter.ChatProject.Models.UserBookManager;
 import MarcoWalter.ChatProject.TcpControllers.TreadMessageSender;
 import javafx.beans.value.ChangeListener;
@@ -83,6 +84,8 @@ public class GroupController {
 		}
 		System.out.println("Group Name: " + groupName);
 		System.out.println("Selected Users: " + selectedUsers);
+		App.me.createChatGroup(groupName, listOfSelectedMembers, App.meSocketUDP);
+		stage.close();
 	}
 
 	@FXML

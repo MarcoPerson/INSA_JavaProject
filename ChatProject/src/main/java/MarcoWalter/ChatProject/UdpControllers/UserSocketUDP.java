@@ -10,18 +10,25 @@ import java.net.SocketException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.Iterator;
+import java.util.Map;
 import java.util.Random;
 
 import MarcoWalter.ChatProject.App;
 import MarcoWalter.ChatProject.ControllerManager;
 import MarcoWalter.ChatProject.HomeController;
+import MarcoWalter.ChatProject.MessageController;
+import MarcoWalter.ChatProject.Models.GroupData;
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import MarcoWalter.ChatProject.Models.User;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.layout.AnchorPane;
 
 public class UserSocketUDP {
 	private User user;
 	private DatagramSocket socketUDP;
+	public static Map<InetAddress, Thread> threadMap = new HashMap<>();
 
 	public UserSocketUDP(User _user) {
 		user = _user;
@@ -35,7 +42,7 @@ public class UserSocketUDP {
 	public void broadcast(int _id, String _pseudo, String _message) {
 		try {
 			int port = 2504;
-			byte[] message = new byte[50];
+			byte[] message = new byte[2000];
 			message = String.valueOf(_id).concat("::").concat(_pseudo).concat("::").concat(_message).getBytes();
 
 			ArrayList<InetAddress> tabBroadcast = new ArrayList<>();
@@ -90,7 +97,7 @@ public class UserSocketUDP {
 	}
 
 	public void sendMessage(OnlineUser _user, int _id, String _pseudo, String _message) throws IOException {
-		byte[] message = new byte[50];
+		byte[] message = new byte[2000];
 		message = String.valueOf(_id).concat("::").concat(_pseudo).concat("::").concat(_message).getBytes();
 		DatagramPacket packet = new DatagramPacket(message, message.length, _user.getIpAddress(), _user.getPort());
 		socketUDP.send(packet);
@@ -103,7 +110,7 @@ public class UserSocketUDP {
 		try {
 			long time = System.currentTimeMillis();
 			socketUDP.setSoTimeout(100);
-			byte[] message = new byte[50];
+			byte[] message = new byte[2000];
 			DatagramPacket packet = new DatagramPacket(message, message.length);
 			while (System.currentTimeMillis() - time < 2000) {
 				System.out.println("Waiting for Agreement");
@@ -161,7 +168,7 @@ public class UserSocketUDP {
 
 	public void receiveMessage() {
 		try {
-			byte[] message = new byte[50];
+			byte[] message = new byte[2000];
 			DatagramPacket packet = new DatagramPacket(message, message.length);
 			while (true) {
 				String replyMessage = "None";
@@ -201,12 +208,37 @@ public class UserSocketUDP {
 					}
 				} else if (data[2].equals("NewGroup")) {
 					user.getUserBookManager().getusedMulticastAddress().add(InetAddress.getByName(data[3]));
+					System.out.println("Bien Recu");
 				} else if (data[2].equals("JoinTheChat")) {
 					String groupName = data[3];
 					InetAddress groupeIP = InetAddress.getByName(data[4]);
 					int multicastPort = Integer.parseInt(data[5]);
-					new MulticastSender(groupeIP, multicastPort, groupName, user);
-					new MulticastReciever(groupeIP, multicastPort, groupName);
+					
+					if(!user.getUserBookManager().getGroupBook().containsKey(groupeIP)){
+						FXMLLoader messageLoader = new FXMLLoader(App.class.getResource("message.fxml"));
+			            AnchorPane load = messageLoader.load();
+			            MessageController controller = messageLoader.getController();
+			            App.discussionGroupScenes.put(groupeIP, load);
+			            App.discussionGroupControllers.put(groupeIP, controller);
+
+
+			            controller.setUserPseudoText(groupName);
+			            controller.setGroupeIP(groupeIP);
+			            controller.setMulticastPort(multicastPort);
+			            controller.setGroupName(groupName);
+			            controller.setMySelf(user);
+			            
+			            new ControllerManager().setDiscussionScene(HomeController.getInstance(), App.discussionGroupScenes.get(groupeIP));
+			            new ControllerManager().setSendButtonAction(controller);
+			            
+//			        	new MulticastSender(groupeIP, multicastPort, groupName,user);
+			            UserSocketUDP.threadMap.put(groupeIP, new MulticastReciever(groupeIP, multicastPort, groupName, user));
+			            
+			            GroupData newGroupData = new GroupData(groupName ,groupeIP, multicastPort);
+			            user.getUserBookManager().addGroupData(groupeIP, newGroupData);
+						HomeController.getInstance().groupItems.add(newGroupData);
+					}
+		            
 				} else if (data[2].equals("Disconnecting")) {
 					new ControllerManager().manageDisconnectedUser(HomeController.getInstance(), newuser);
 				}
@@ -214,6 +246,7 @@ public class UserSocketUDP {
 					sendMessage(newuser, user.getId(), user.getPseudo(), replyMessage);
 			}
 		} catch (Exception e) {
+			e.printStackTrace();
 		}
 	}
 

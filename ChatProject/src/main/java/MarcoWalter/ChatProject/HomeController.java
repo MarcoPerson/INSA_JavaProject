@@ -4,8 +4,10 @@ import java.io.IOException;
 import java.net.Socket;
 import java.util.Random;
 
+import MarcoWalter.ChatProject.Models.GroupData;
 import MarcoWalter.ChatProject.Models.OnlineUser;
 import MarcoWalter.ChatProject.TcpControllers.UserSocketTCP;
+import MarcoWalter.ChatProject.UdpControllers.UserSocketUDP;
 import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -20,6 +22,7 @@ import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.image.Image;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.HBox;
@@ -32,7 +35,7 @@ import javafx.stage.Modality;
 import javafx.stage.Popup;
 import javafx.stage.Stage;
 
-public class HomeController {
+public class HomeController{
 	private static HomeController instance;
 
 	@FXML
@@ -40,11 +43,19 @@ public class HomeController {
 
 	@FXML
 	private TableColumn<OnlineUser, String> onlineUsersTable;
+	
+	@FXML
+	private TableView<GroupData> groupList;
+
+	@FXML
+	private TableColumn<GroupData, String> groupTable;
 
 	@FXML
 	BorderPane discussionScene;
 
 	public static ObservableList<OnlineUser> items;
+	
+	public static ObservableList<GroupData> groupItems;
 
 	public static HomeController getInstance() {
 		if (instance == null) {
@@ -57,6 +68,7 @@ public class HomeController {
 	private void initialize() {
 		instance = this;
 		App.getStage().setTitle("Home - " + App.me.getPseudo());
+		
 		items = FXCollections.observableArrayList();
 		onlineUsersList.setItems(items);
 		onlineUsersTable.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getPseudo()));
@@ -68,6 +80,20 @@ public class HomeController {
 			OnlineUser selectedUser = onlineUsersList.getSelectionModel().getSelectedItem();
 			if (selectedUser != null) {
 				App.StartDiscussion(selectedUser);
+			}
+		});
+		
+		groupItems = FXCollections.observableArrayList();
+		groupList.setItems(groupItems);
+		groupTable.setCellValueFactory(cellData -> new SimpleStringProperty(cellData.getValue().getGroupName()));
+		for (GroupData data : App.me.getUserBookManager().getGroupBook().values()) {
+			System.out.println(data.getGroupName());
+			groupItems.add(data);
+		}
+		groupList.setOnMouseClicked(event -> {
+			GroupData selectedGroup = groupList.getSelectionModel().getSelectedItem();
+			if (selectedGroup != null) {
+				App.enterGroup(selectedGroup);
 			}
 		});
 	}
@@ -92,13 +118,23 @@ public class HomeController {
 		App.meSocketUDP.close();
 		App.discussionControllers.clear();
 		App.discussionScenes.clear();
+		App.discussionGroupControllers.clear();
+		App.discussionGroupScenes.clear();
 		items.clear();
+		groupItems.clear();
 		
 		for (Socket onlineUserSocket : UserSocketTCP.socketMap.values()) {
 			onlineUserSocket.close();
 		}
+		
+		for (Thread groupThread : UserSocketUDP.threadMap.values()) {
+			groupThread.stop();
+		}
+		
+		UserSocketUDP.threadMap.clear();
 		UserSocketTCP.socketMap.clear();
 		App.me.getUserBookManager().deleteAllOnlineUser();
+		App.me.getUserBookManager().deleteAllGroupData();
 		App.setRoot("login");
 		App.getStage().setTitle("Login");
 	}
@@ -112,6 +148,15 @@ public class HomeController {
 		PseudoController controller = fxmlLoader.getController();
 		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
 		Scene scene = new Scene(pseudoPane, 300, 200);
+		scene.setOnKeyPressed(event -> {
+		    if (event.getCode() == KeyCode.ENTER) {
+		    	try {
+					controller.changePseudo();
+				} catch (IOException e) {
+					e.printStackTrace();
+				}
+		    }
+		});
 		modal.setScene(scene);
 		modal.setTitle("Change Pseudo");
 		modal.setResizable(false);
@@ -128,6 +173,15 @@ public class HomeController {
 		GroupController controller = fxmlLoader.getController();
 		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
 		Scene scene = new Scene(pseudoPane, 600, 400);
+		scene.setOnKeyPressed(event -> {
+		    if (event.getCode() == KeyCode.ENTER) {
+		    	try {
+					controller.createGroup();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+		});
 		modal.setScene(scene);
 		modal.setTitle("Create Group Chat");
 		modal.setResizable(false);
@@ -212,9 +266,11 @@ public class HomeController {
         
         textFlow.setPrefHeight(11);
         textFlow.setPrefWidth(301);
+        textFlow.setPadding(new Insets(10, 10, 10, 10));
 
         Text notificationText = new Text(message);
         notificationText.setTextAlignment(TextAlignment.CENTER);
+        notificationText.setLineSpacing(10);
         notificationText.setStrokeWidth(0);
 
         textFlow.getChildren().add(notificationText);
@@ -227,6 +283,15 @@ public class HomeController {
         root.getChildren().add(vBox);
         
         Scene scene = new Scene(root, 250, 175);
+        scene.setOnKeyPressed(event -> {
+		    if (event.getCode() == KeyCode.ENTER) {
+		    	try {
+					okButton.fire();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+		});
 		modal.setScene(scene);
 		modal.setTitle("Notification");
 		modal.setResizable(false);
