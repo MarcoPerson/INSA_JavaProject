@@ -17,20 +17,26 @@ import MarcoWalter.ChatProject.UdpControllers.MulticastSender;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.Scene;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 
 public class MessageController extends ModelController  {
 	private Socket socket;
@@ -47,6 +53,9 @@ public class MessageController extends ModelController  {
 	@FXML 
 	private Button sendMessage;
 	
+	@FXML 
+	private Button addUsersToGroupButton;
+	
 	@FXML
 	private ScrollPane scrollMessage;
 	
@@ -58,6 +67,9 @@ public class MessageController extends ModelController  {
 	
 	public void setUserPseudoText(String text) {
 		userPseudo.setText(text);
+		if(groupName == null) {
+			addUsersToGroupButton.setVisible(false);
+		}
 	}
 	
 	@FXML
@@ -93,6 +105,36 @@ public class MessageController extends ModelController  {
     		}
     		
     	}
+    }
+    
+    @FXML
+    private void addUsersToGroup() throws IOException {
+    	Stage modal = new Stage();
+		modal.initModality(Modality.APPLICATION_MODAL);
+		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("addUsers.fxml"));
+		AnchorPane pseudoPane = fxmlLoader.load();
+		AddUsersController controller = fxmlLoader.getController();
+		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		Scene scene = new Scene(pseudoPane, 600, 400);
+		scene.setOnKeyPressed(event -> {
+		    if (event.getCode() == KeyCode.ENTER) {
+		    	try {
+					controller.addUsersGroup();
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
+		    }
+		});
+		modal.setScene(scene);
+		modal.setTitle("Add Group Users");
+		modal.setResizable(false);
+		controller.setStage(modal);
+		controller.setGroupNameText(groupName);
+		
+    	String message = "JoinTheChat".concat("::").concat(groupName).concat("::").concat(groupeIP.getHostAddress()).concat("::").concat(Integer.toString(multicastPort));
+    	controller.setMessage(message);
+		controller.initializeUsers(App.me.getUserBookManager());
+		modal.show();
     }
     
     public void setSendAction() {

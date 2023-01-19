@@ -44,7 +44,7 @@ public class MulticastReciever extends Thread {
 				socketReception.receive(message);
 				received = (new DataInputStream(new ByteArrayInputStream(contenuMessage))).readUTF();
 				String[] data = received.split("::");
-				received = "[" + data[0] + "]" + data[2] + " :" + data[1];
+				// received = "[" + data[0] + "]" + data[2] + " :" + data[1];
 				if (data[2].equals(user.getPseudo()))
 					continue;
 
@@ -57,7 +57,7 @@ public class MulticastReciever extends Thread {
 				new ControllerManager().addMessageIntoScrollPane(controller, data[1] + "::" + data[2], todayAsString,
 						"group");
 
-				System.out.println(received);
+				// System.out.println(received);
 			} catch (Exception exc) {
 				System.out.println(exc);
 			}

@@ -90,11 +90,11 @@ public class User {
             App.discussionGroupControllers.put(groupeIP, controller);
 
 
-            controller.setUserPseudoText(groupName);
+            controller.setGroupName(groupName);
             controller.setGroupeIP(groupeIP);
             controller.setMulticastPort(multicastPort);
-            controller.setGroupName(groupName);
             controller.setMySelf(this);
+            controller.setUserPseudoText(groupName);
             
             new ControllerManager().setDiscussionScene(HomeController.getInstance(), App.discussionGroupScenes.get(groupeIP));
             new ControllerManager().setSendButtonAction(controller);

@@ -49,7 +49,7 @@ public class ThreadMessageReceiver extends Thread {
                 socket.close();
                 return false;
             } else {
-                System.out.println(user.getPseudo() + " : " + message);
+                // System.out.println(user.getPseudo() + " : " + message);
                 String pattern = "MM/dd/yyyy HH:mm:ss";
                 DateFormat df = new SimpleDateFormat(pattern);
                 Date today = Calendar.getInstance().getTime();
