@@ -1,5 +1,6 @@
 package MarcoWalter.ChatProject;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -35,6 +36,8 @@ import javafx.scene.layout.VBox;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextFlow;
+import javafx.stage.FileChooser;
+import javafx.stage.FileChooser.ExtensionFilter;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 
@@ -51,7 +54,10 @@ public class MessageController extends ModelController  {
 	Label userPseudo;
 	
 	@FXML 
-	private Button sendMessage;
+	private Button sendMessageButton;
+	
+	@FXML 
+	private Button sendFileButton;
 	
 	@FXML 
 	private Button addUsersToGroupButton;
@@ -69,6 +75,8 @@ public class MessageController extends ModelController  {
 		userPseudo.setText(text);
 		if(groupName == null) {
 			addUsersToGroupButton.setVisible(false);
+		}else {
+			sendFileButton.setVisible(false);
 		}
 	}
 	
@@ -278,6 +286,30 @@ public class MessageController extends ModelController  {
     	}
     }
 
+    @FXML
+    public void sendFile() {
+        FileChooser fileChooser = new FileChooser();
+        fileChooser.getExtensionFilters().add(new ExtensionFilter("Images", "*.jpg", "*.jpeg","*.png", "*.gif"));
+        File file = fileChooser.showOpenDialog(null);
+        if (file != null) {
+            try {
+            	System.out.println(file.getName());
+//                Socket socket = new Socket("hostname", port);
+//                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+//                FileInputStream fis = new FileInputStream(file);
+//                byte[] buffer = new byte[(int)file.length()];
+//                int bytesRead = fis.read(buffer);
+//                dos.write(buffer, 0, bytesRead);
+//                fis.close();
+//                dos.close();
+//                socket.close();
+//                System.out.println("File sent successfully!");
+            } catch (Exception e) {
+                e.printStackTrace();
+            }
+        }
+    }
+    
 	public OnlineUser getUser() {
 		return user;
 	}
