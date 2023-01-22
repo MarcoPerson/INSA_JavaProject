@@ -63,6 +63,10 @@ public class LoginController extends ModelController {
 		    }
 		});
     }
+
+	public void disableSendAction() {
+		idField.getScene().setOnKeyPressed(null);
+	}
 	
     @FXML
     private void login() throws IOException {
@@ -75,7 +79,7 @@ public class LoginController extends ModelController {
 				password = reader.readLine();
 			    reader.close();
 			    // idField.getText().toString().equals(id) && 
-				if(passwordField.getText().toString().equals(password)) {
+				if(idField.getText().toString().equals(id) && passwordField.getText().toString().equals(password)) {
 					pseudo = pseudoField.getText().toString();
 					App.ConnectToTheSystem(Integer.parseInt(idField.getText().toString()), pseudo, password);
 				}else {

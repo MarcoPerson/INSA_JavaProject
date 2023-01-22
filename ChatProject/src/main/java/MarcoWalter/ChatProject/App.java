@@ -90,6 +90,7 @@ public class App {
 				mysocket = new UserSocketClient(me);
 
 				ConnectToDataBase(id, pseudo, password);
+				scene.setOnKeyPressed(null);
 				setRoot("home");
 
 				File f = new File(".info");
@@ -155,6 +156,7 @@ public class App {
 					stage.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
 					try {
 						scene = new Scene(loadFXML("login"), 900, 500);
+						new ControllerManager().setSendButtonAction(LoginController.getInstance());
 					} catch (IOException e1) {
 						e1.printStackTrace();
 					}
@@ -170,6 +172,10 @@ public class App {
 					});
 
 					stage.show();
+					File directory = new File("files");
+					if (!directory.exists()) {
+						directory.mkdirs();
+					}
 				}
 			});
 		});

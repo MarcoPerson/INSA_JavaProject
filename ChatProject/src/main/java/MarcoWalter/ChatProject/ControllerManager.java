@@ -63,6 +63,19 @@ public class ControllerManager {
 		});
 	}
 
+	public void disableSendButtonAction(ModelController controller) {
+		if (controller == null) {
+			System.out.println("Controller or connectionMessage object is null. Text cannot be set.");
+			return;
+		}
+		Platform.runLater(new Runnable() {
+			@Override
+			public void run() {
+				controller.disableSendAction();
+			}
+		});
+	}
+
 	public void updateHomeTitle() {
 		Platform.runLater(new Runnable() {
 			@Override

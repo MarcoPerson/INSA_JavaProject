@@ -105,12 +105,17 @@ public class HomeController{
 
 	@FXML
 	public void deconnectToLogin() throws IOException {
+		App.me.disconnectectFromNetwork(App.meSocketUDP);
+
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+		}
 		for (Thread onlineUserThread : UserSocketTCP.threadMap.values()) {
 			onlineUserThread.stop();
 		}
 		UserSocketTCP.threadMap.clear();
 		
-		App.me.disconnectectFromNetwork(App.meSocketUDP);
 		App.listener.stop();
 		App.listener = null;
 		App.reception.stop();

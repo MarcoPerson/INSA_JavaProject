@@ -59,7 +59,9 @@ public class TreadMessageSender extends Thread {
 	public void run() {
 		if (isImage) {
 			try {
-				send.writeByte(1);
+				send.writeBoolean(isImage);
+				send.writeUTF(name);
+				send.flush();
 				send.write(messages, 0, size);
 				send.flush();
 				String pattern = "MM/dd/yyyy HH:mm:ss";
@@ -98,7 +100,7 @@ public class TreadMessageSender extends Thread {
 
 	public boolean sendMessage(String message) {
 		try {
-			send.writeByte(0);
+			send.writeBoolean(isImage);
 			send.writeUTF(message);
 			send.flush();
 		} catch (Exception e) {

@@ -47,13 +47,22 @@ public class ThreadMessageReceiver extends Thread {
 	}
 
 	public boolean receiveMessage() {
-		byte[] buffer = new byte[1000000];
-
 		try {
 			byte messageType = receive.readByte();
 			if (messageType == 1) {
-				String message = "nouveau_fichier";
+				String name = receive.readUTF();
+				String message = "files/" + name;
 				BufferedImage image = ImageIO.read(receive);
+				File directory = new File(message);
+				while(directory.exists()){
+					int delimiter = message.lastIndexOf(".");
+					if(delimiter == -1){
+						message += "1";
+					}else{
+						message = message.substring(0, delimiter) + "1" + message.substring(delimiter);
+					}
+					directory = new File(message);
+				}
 				File outputFile = new File(message);
 				ImageIO.write(image, "png", outputFile);
 				String pattern = "MM/dd/yyyy HH:mm:ss";
@@ -61,11 +70,11 @@ public class ThreadMessageReceiver extends Thread {
 				Date today = Calendar.getInstance().getTime();
 				String todayAsString = df.format(today);
 				dbConn.insertLineIntoUserMessages(user.getId(), 1, "[image] : " + message, todayAsString);
-
 				MessageController controller = App.discussionControllers.get(user.getId());
 				new ControllerManager().addMessageIntoScrollPane(controller, "[image] : " + message, todayAsString,
 						"single");
-			} else if(messageType == 0) {
+				receive.skip(receive.available());
+			} else if (messageType == 0) {
 				String message = receive.readUTF();
 				String pattern = "MM/dd/yyyy HH:mm:ss";
 				DateFormat df = new SimpleDateFormat(pattern);
@@ -77,7 +86,6 @@ public class ThreadMessageReceiver extends Thread {
 				new ControllerManager().addMessageIntoScrollPane(controller, message, todayAsString, "single");
 			}
 		} catch (Exception e) {
-			e.printStackTrace();
 			if (e.toString().equals("java.net.SocketException: Socket closed")) {
 				return false;
 			}
