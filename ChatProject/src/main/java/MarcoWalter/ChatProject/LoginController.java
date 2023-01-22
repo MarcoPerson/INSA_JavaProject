@@ -32,7 +32,7 @@ public class LoginController extends ModelController {
 	String pseudo;
 	String password;
 	
-	String fileName = ".connection_info.bin";
+	String fileName = ".con.bin";
 	
 	public void setconnectionMessageText(String text) {
 		System.out.println(text);

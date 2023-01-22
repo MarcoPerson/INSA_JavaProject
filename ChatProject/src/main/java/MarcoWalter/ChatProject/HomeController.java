@@ -151,7 +151,7 @@ public class HomeController{
 		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("pseudo.fxml"));
 		AnchorPane pseudoPane = fxmlLoader.load();
 		PseudoController controller = fxmlLoader.getController();
-		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		modal.getIcons().add(new Image(App.class.getResource("/Images/chat_icon.png").toString()));
 		Scene scene = new Scene(pseudoPane, 300, 200);
 		scene.setOnKeyPressed(event -> {
 		    if (event.getCode() == KeyCode.ENTER) {
@@ -176,7 +176,7 @@ public class HomeController{
 		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("group.fxml"));
 		AnchorPane pseudoPane = fxmlLoader.load();
 		GroupController controller = fxmlLoader.getController();
-		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		modal.getIcons().add(new Image(App.class.getResource("/Images/chat_icon.png").toString()));
 		Scene scene = new Scene(pseudoPane, 600, 400);
 		scene.setOnKeyPressed(event -> {
 		    if (event.getCode() == KeyCode.ENTER) {
@@ -252,7 +252,7 @@ public class HomeController{
 		Stage modal = new Stage();
 		modal.initModality(Modality.APPLICATION_MODAL);
 
-		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		modal.getIcons().add(new Image(App.class.getResource("/Images/chat_icon.png").toString()));
 		
 	    AnchorPane root = new AnchorPane();
 	    VBox vBox = new VBox();

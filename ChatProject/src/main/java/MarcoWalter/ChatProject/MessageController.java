@@ -128,7 +128,7 @@ public class MessageController extends ModelController {
 		FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("addUsers.fxml"));
 		AnchorPane pseudoPane = fxmlLoader.load();
 		AddUsersController controller = fxmlLoader.getController();
-		modal.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+		modal.getIcons().add(new Image(App.class.getResource("/Images/chat_icon.png").toString()));
 		Scene scene = new Scene(pseudoPane, 600, 400);
 		scene.setOnKeyPressed(event -> {
 			if (event.getCode() == KeyCode.ENTER) {

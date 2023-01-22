@@ -155,7 +155,7 @@ public class App {
 				@Override
 				public void run() {
 					stage = new Stage();
-					stage.getIcons().add(new Image("file:src/main/resources/Images/chat_icon.png"));
+					stage.getIcons().add(new Image(App.class.getResource("/Images/chat_icon.png").toString()));
 					try {
 						scene = new Scene(loadFXML("login"), 900, 500);
 						new ControllerManager().setSendButtonAction(LoginController.getInstance());
