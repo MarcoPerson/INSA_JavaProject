@@ -59,6 +59,7 @@ public class User {
         boolean agreed = false;
         try {
             socketUDP.broadcast(id, pseudo, "Disconnecting");
+            socketUDP.broadcast(id, pseudo, "Disconnecting");
             userBookManager.deleteAllOnlineUser();
         } catch (Exception e) {
         }

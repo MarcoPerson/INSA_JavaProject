@@ -322,6 +322,6 @@ public class HomeController{
 		App.discussionControllers.remove(newuser.getId());
 		App.discussionScenes.remove(newuser.getId());
 		
-		discussionScene.setCenter(getMessagePane(newuser.getPseudo() + " is now Offline"));
+		discussionScene.setCenter(getMessagePane(newuser.getPseudo() + " went Offline"));
 	}
 }

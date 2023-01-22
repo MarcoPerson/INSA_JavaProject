@@ -56,7 +56,7 @@ public class PseudoController {
 				setLabelPseudoText("It is already your Pseudo !");
 			} else {
 				App.reception.stop();
-				App.meSocketUDP.broadcast(App.me.getId(), pseudo, "Rien");
+				App.meSocketUDP.broadcast(App.me.getId(), pseudo, "Is Pseudo Ok");
 				boolean agreed = App.meSocketUDP.waitForAggrement();
 				
 				App.meSocketUDP.broadcast(App.me.getId(), pseudo, "Is Pseudo Ok");

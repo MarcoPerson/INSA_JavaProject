@@ -83,6 +83,8 @@ public class App {
 
 			if (agreed) {
 				meSocketUDP.broadcast(me.getId(), me.getPseudo(), "newUser");
+				meSocketUDP.broadcast(me.getId(), me.getPseudo(), "newUser");
+				
 				reception = new Thread(() -> meSocketUDP.receiveMessage());
 				reception.start();
 				new ControllerManager().setconnectionMessageText(new LoginController().getInstance(),

@@ -73,12 +73,7 @@ public class UserSocketUDP {
 			InetAddress ipAddress = tabBroadcast.get(tabBroadcast.size() - 1);
 			DatagramPacket packet = new DatagramPacket(message, message.length, ipAddress, port);
 			socketUDP.send(packet);
-			try {
-				socketUDP.setSoTimeout(100);
-				socketUDP.receive(packet);
-				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
-			} catch (Exception e) {
-			}
+
 			try {
 				socketUDP.setSoTimeout(9000000);
 			} catch (Exception e) {
@@ -104,13 +99,16 @@ public class UserSocketUDP {
 		boolean agreed = true;
 		try {
 			long time = System.currentTimeMillis();
-			socketUDP.setSoTimeout(100);
+			socketUDP.setSoTimeout(500);
 			byte[] message = new byte[2000];
 			DatagramPacket packet = new DatagramPacket(message, message.length);
 			while (System.currentTimeMillis() - time < 2000) {
 				System.out.println("Waiting for Agreement");
 				socketUDP.receive(packet);
 				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
+
+				if(Integer.parseInt(data[0]) == user.getId()) continue;
+
 				System.out.println("Message reçu = " + Arrays.toString(data));
 				if (data[2].compareTo("Ok") == 0 || data[2].compareTo("Not Ok") == 0) {
 					if (data[2].compareTo("Ok") != 0)
@@ -174,6 +172,9 @@ public class UserSocketUDP {
 				}
 				socketUDP.receive(packet);
 				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
+
+				if(Integer.parseInt(data[0]) == user.getId()) continue;
+
 				System.out.println("Message reçu = " + Arrays.toString(data));
 				OnlineUser newuser = new OnlineUser(data[1], Integer.parseInt(data[0]), packet.getAddress(),
 						packet.getPort());
@@ -184,6 +185,7 @@ public class UserSocketUDP {
 						replyMessage = "Ok";
 					}
 				} else if (data[2].equals("newUser")) {
+					if(user.getUserBookManager().getUserBook().containsKey(newuser.getId())) continue;
 					user.getUserBookManager().addOnlineUser(newuser.getId(), newuser);
 					HomeController.getInstance().items.add(newuser);
 					System.out.println("Number of Online User : " + user.getUserBookManager().getUserBook().size());
