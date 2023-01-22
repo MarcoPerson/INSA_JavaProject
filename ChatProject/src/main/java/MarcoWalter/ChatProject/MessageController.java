@@ -1,6 +1,7 @@
 package MarcoWalter.ChatProject;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.Socket;
@@ -294,16 +295,16 @@ public class MessageController extends ModelController  {
         if (file != null) {
             try {
             	System.out.println(file.getName());
-//                Socket socket = new Socket("hostname", port);
-//                DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-//                FileInputStream fis = new FileInputStream(file);
-//                byte[] buffer = new byte[(int)file.length()];
-//                int bytesRead = fis.read(buffer);
-//                dos.write(buffer, 0, bytesRead);
-//                fis.close();
-//                dos.close();
-//                socket.close();
-//                System.out.println("File sent successfully!");
+                FileInputStream fis = new FileInputStream(file);
+                byte[] buffer = new byte[(int)file.length()];
+                int bytesRead = fis.read(buffer);
+                new TreadMessageSender(user, socket, bytesRead, buffer, file.getName());
+                fis.close();
+            	String pattern = "MM/dd/yyyy HH:mm:ss";
+                DateFormat df = new SimpleDateFormat(pattern);
+                Date today = Calendar.getInstance().getTime();
+                String todayAsString = df.format(today);
+        		addSenderMessage("[image] : " + file.getName(), todayAsString);
             } catch (Exception e) {
                 e.printStackTrace();
             }

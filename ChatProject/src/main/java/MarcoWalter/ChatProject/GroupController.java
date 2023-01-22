@@ -72,20 +72,25 @@ public class GroupController {
 	public void createGroup() {
 		ArrayList<OnlineUser> listOfSelectedMembers = new ArrayList<OnlineUser>();
 		String groupName = textFieldGroup.getText();
-		List<String> selectedUsers = new ArrayList<String>();
-		for (int i = 0; i < listGroupUserVbox.getChildren().size() - 1; i++) {
-			HBox hbox = (HBox) listGroupUserVbox.getChildren().get(i+1);
-			System.out.println("Group : " + hbox.getChildren().size());
-			CheckBox checkBox = (CheckBox) hbox.getChildren().get(0);
-			if (checkBox.isSelected()) {
-				selectedUsers.add(checkBox.getText());
-				listOfSelectedMembers.add(pseudoMap.get(checkBox.getText()));
+		if(!groupName.trim().isEmpty()) {
+			List<String> selectedUsers = new ArrayList<String>();
+			for (int i = 0; i < listGroupUserVbox.getChildren().size() - 1; i++) {
+				HBox hbox = (HBox) listGroupUserVbox.getChildren().get(i+1);
+				System.out.println("Group : " + hbox.getChildren().size());
+				CheckBox checkBox = (CheckBox) hbox.getChildren().get(0);
+				if (checkBox.isSelected()) {
+					selectedUsers.add(checkBox.getText());
+					listOfSelectedMembers.add(pseudoMap.get(checkBox.getText()));
+				}
 			}
+			System.out.println("Group Name: " + groupName);
+			System.out.println("Selected Users: " + selectedUsers);
+			App.me.createChatGroup(groupName, listOfSelectedMembers, App.meSocketUDP);
+			stage.close();
+		}else {
+			setChatGroupInfoFieldText("Please enter a valid group name !");
 		}
-		System.out.println("Group Name: " + groupName);
-		System.out.println("Selected Users: " + selectedUsers);
-		App.me.createChatGroup(groupName, listOfSelectedMembers, App.meSocketUDP);
-		stage.close();
+		
 	}
 
 	@FXML

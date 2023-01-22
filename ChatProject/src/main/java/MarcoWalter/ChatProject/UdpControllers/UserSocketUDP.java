@@ -70,7 +70,7 @@ public class UserSocketUDP {
 //            Iterator<InterfaceAddress> networkInterface = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getInterfaceAddresses().iterator();
 //            InetAddress ipAddress = networkInterface.next().getBroadcast();
 
-			InetAddress ipAddress = tabBroadcast.get(tabBroadcast.size() - 2);
+			InetAddress ipAddress = tabBroadcast.get(tabBroadcast.size() - 1);
 			DatagramPacket packet = new DatagramPacket(message, message.length, ipAddress, port);
 			socketUDP.send(packet);
 			try {
