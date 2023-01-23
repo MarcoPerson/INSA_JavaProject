@@ -9,9 +9,13 @@ Welcome to our communication system for businesses. This system uses an agent to
 To install the system, you will first need to install the agent on the workstations of the people who will be interacting. To do this, follow the instructions below:
 
 -Copy the agent installation file on your workstation.
+
 -Run the installation file on each workstation where the agent is to be installed.
+
 -Follow the on-screen instructions to install the agent.
+
 -Once installation is complete, configure the agent settings on each workstation as needed.
+
 NB: During the installation you must make sure to give each user a unique id and password that this one will never change.
  
 
@@ -22,11 +26,17 @@ Once installation is complete, the system is ready to be used. Users can begin u
 When a user uses our system he can:
 
 -Change his pseudo
+
 -Send messages to a specific user 
+
 -Detect and take into account users' connections and disconnections in real-time
+
 -Create discussion groups for specific projects or teams
+
 -Add members to a group
+
 -Send messages to a group
+
 -Share images
 	
 
