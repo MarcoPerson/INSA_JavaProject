@@ -64,11 +64,12 @@ public class UserSocketUDP {
 				e.printStackTrace();
 			}
 
-//            Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
-//            NetworkInterface ni = en.nextElement();
-//            InterfaceAddress ia = ni.getInterfaceAddresses().get(1);
-//            Iterator<InterfaceAddress> networkInterface = NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getInterfaceAddresses().iterator();
-//            InetAddress ipAddress = networkInterface.next().getBroadcast();
+			// Enumeration<NetworkInterface> en = NetworkInterface.getNetworkInterfaces();
+			// NetworkInterface ni = en.nextElement();
+			// InterfaceAddress ia = ni.getInterfaceAddresses().get(1);
+			// Iterator<InterfaceAddress> networkInterface =
+			// NetworkInterface.getByInetAddress(InetAddress.getLocalHost()).getInterfaceAddresses().iterator();
+			// InetAddress ipAddress = networkInterface.next().getBroadcast();
 
 			InetAddress ipAddress = tabBroadcast.get(tabBroadcast.size() - 1);
 			DatagramPacket packet = new DatagramPacket(message, message.length, ipAddress, port);
@@ -107,7 +108,8 @@ public class UserSocketUDP {
 				socketUDP.receive(packet);
 				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
 
-				if(Integer.parseInt(data[0]) == user.getId()) continue;
+				if (Integer.parseInt(data[0]) == user.getId())
+					continue;
 
 				System.out.println("Message reçu = " + Arrays.toString(data));
 				if (data[2].compareTo("Ok") == 0 || data[2].compareTo("Not Ok") == 0) {
@@ -173,7 +175,8 @@ public class UserSocketUDP {
 				socketUDP.receive(packet);
 				String[] data = new String(packet.getData(), 0, packet.getLength()).split("::");
 
-				if(Integer.parseInt(data[0]) == user.getId()) continue;
+				if (Integer.parseInt(data[0]) == user.getId())
+					continue;
 
 				System.out.println("Message reçu = " + Arrays.toString(data));
 				OnlineUser newuser = new OnlineUser(data[1], Integer.parseInt(data[0]), packet.getAddress(),
@@ -185,7 +188,8 @@ public class UserSocketUDP {
 						replyMessage = "Ok";
 					}
 				} else if (data[2].equals("newUser")) {
-					if(user.getUserBookManager().getUserBook().containsKey(newuser.getId())) continue;
+					if (user.getUserBookManager().getUserBook().containsKey(newuser.getId()))
+						continue;
 					user.getUserBookManager().addOnlineUser(newuser.getId(), newuser);
 					HomeController.getInstance().items.add(newuser);
 					System.out.println("Number of Online User : " + user.getUserBookManager().getUserBook().size());
@@ -198,6 +202,7 @@ public class UserSocketUDP {
 					}
 				} else if (data[2].equals("newPseudo")) {
 					OnlineUser toChangePseudoUser = user.getUserBookManager().getUserBook().get(newuser.getId());
+					String oldPseudo = toChangePseudoUser.getPseudo();
 					toChangePseudoUser.setPseudo(newuser.getPseudo());
 					replyMessage = "userPseudoChanged";
 
@@ -206,6 +211,8 @@ public class UserSocketUDP {
 					if (App.discussionScenes.containsKey(newuser.getId())) {
 						new ControllerManager().updateOnlineUser(App.discussionControllers.get(newuser.getId()),
 								toChangePseudoUser);
+						new ControllerManager().showNotification(HomeController.getInstance(),
+								oldPseudo + " changes his pseudo to " + toChangePseudoUser.getPseudo());
 					}
 				} else if (data[2].equals("NewGroup")) {
 					user.getUserBookManager().getusedMulticastAddress().add(InetAddress.getByName(data[3]));
@@ -232,7 +239,7 @@ public class UserSocketUDP {
 								App.discussionGroupScenes.get(groupeIP));
 						new ControllerManager().setSendButtonAction(controller);
 
-//			        	new MulticastSender(groupeIP, multicastPort, groupName,user);
+						// new MulticastSender(groupeIP, multicastPort, groupName,user);
 						UserSocketUDP.threadMap.put(groupeIP,
 								new MulticastReciever(groupeIP, multicastPort, groupName, user));
 
