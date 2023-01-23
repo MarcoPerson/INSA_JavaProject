@@ -229,11 +229,11 @@ public class UserSocketUDP {
 						App.discussionGroupScenes.put(groupeIP, load);
 						App.discussionGroupControllers.put(groupeIP, controller);
 
-						controller.setUserPseudoText(groupName);
+						controller.setGroupName(groupName);
 						controller.setGroupeIP(groupeIP);
 						controller.setMulticastPort(multicastPort);
-						controller.setGroupName(groupName);
 						controller.setMySelf(user);
+						controller.setUserPseudoText(groupName);
 
 						new ControllerManager().setDiscussionScene(HomeController.getInstance(),
 								App.discussionGroupScenes.get(groupeIP));
